@@ -1,0 +1,10 @@
+LiteDb-Memory-Lib/.idea/*
+LiteDb-Memory-Lib/bin/*
+LiteDb-Memory-Lib/obj/*
+/MSBuild/.idea/*
+LiteDb-Memory-Tests/obj/*
+LiteDb-Memory-Tests/bin/*
+LiteDb-Memory-Tests/.idea/*
+LiteDb-Memory-Lib/global.json
+
+
