@@ -22,4 +22,8 @@
         <Using Include="NUnit.Framework"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LiteDb-Memory-Lib\LiteDb-Memory-Lib.csproj" />
+    </ItemGroup>
+
 </Project>

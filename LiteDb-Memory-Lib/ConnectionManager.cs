@@ -7,14 +7,18 @@ public sealed class ConnectionManager
     #region Atrributes
     
     private static ConnectionManager? _instance;
-    private static Dictionary<string, LiteDatabase> _databases = new();
-    private static Dictionary<string, MemoryStream> _memoryFiles = new();
+    private static Dictionary<string, LiteDatabase> _databases;
+    private static Dictionary<string, MemoryStream> _memoryFiles;
     
     #endregion
     
     #region Contructors
 
-    private ConnectionManager() { }
+    private ConnectionManager()
+    {
+        _databases = new Dictionary<string, LiteDatabase>();
+        _memoryFiles = new Dictionary<string, MemoryStream>();
+    }
 
     #endregion
     
@@ -34,7 +38,17 @@ public sealed class ConnectionManager
 
     }
 
-    public static void CreateDatabase(string alias, string path, bool substituteIfExist = false, bool isShared = false)
+
+    public void Close(string alias)
+    {
+        if (!_databases.TryGetValue(alias, out LiteDatabase? value)) return;
+        value.Dispose();
+        _databases.Remove(alias);
+        _memoryFiles.Remove(alias);
+
+    }
+
+    public void CreateDatabase(string alias, string path=null, bool substituteIfExist = false, bool isShared = false)
     {
 
         if (string.IsNullOrWhiteSpace(path))
@@ -79,6 +93,11 @@ public sealed class ConnectionManager
 
         }
     }
+    public static ConnectionManager Instance()
+    {
+        return _instance ??= new ConnectionManager();
+    }
+
     
     #endregion
 }
