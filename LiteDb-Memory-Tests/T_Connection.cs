@@ -26,4 +26,16 @@ public class Tests
         manager.Close(alias_shared);
         manager.Close(alias);
     }
+
+    public void T_Create_And_Remove_Data_Base()
+    {
+        var aliasDb = "Test_Db";
+        
+        var manager = ConnectionManager.Instance();
+        
+        // Create shared database 
+        manager.CreateDatabase(aliasDb, isShared: true);
+        
+        manager.Close(aliasDb);
+    }
 }
