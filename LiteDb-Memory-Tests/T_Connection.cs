@@ -47,7 +47,6 @@ public class Tests
         
         // Create collection
         manager.CreateCollection(aliasDb, "personal_data",[customer]);
-        var collection = manager.GetCollection<BsonDocument>(aliasDb,"personal_data");
        
         // Write to disk
         var folderPath = "D:\\GitHubRepository\\C#\\LiteDb-Memory-Lib\\LiteDb-Memory-Tests\\Data";
@@ -56,5 +55,9 @@ public class Tests
         
         // Load again the database
         manager.CreateDatabase(aliasDb, pathToKeep);
+        var collection = manager.GetCollection<BsonDocument>(aliasDb, "personal_data");
+        var element = collection?.FindById(customer["_id"]);
+        
+        Assert.That(element, Is.Not.Null);
     }
 }
