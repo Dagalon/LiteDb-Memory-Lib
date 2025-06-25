@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using LiteDB;
+﻿using LiteDB;
 
 namespace LiteDb_Memory_Lib;
 
@@ -8,8 +7,8 @@ public sealed class ConnectionManager
     #region Atrributes
     
     private static ConnectionManager? _instance;
-    private static Dictionary<string, LiteDatabase> _databases;
-    private static Dictionary<string, MemoryStream> _memoryFiles;
+    private static Dictionary<string, LiteDatabase> _databases = null!;
+    private static Dictionary<string, MemoryStream> _memoryFiles = null!;
     
     #endregion
     
@@ -38,14 +37,15 @@ public sealed class ConnectionManager
         return _databases[alias];
     }
 
-    public EnumsLiteDbMemory.Output Close(string alias, string? pathToKeep = null, bool writeFile = false)
+    public EnumsLiteDbMemory.Output Close(string alias, string? pathToKeep = null)
     {
         if (!_databases.TryGetValue(alias, out LiteDatabase? db)) 
             return EnumsLiteDbMemory.Output.DB_NOT_FOUND;
 
-        if (writeFile)
+        if (!string.IsNullOrEmpty(pathToKeep))
         {
-            
+            _memoryFiles[alias].Position = 0;
+            File.WriteAllBytes(pathToKeep, _memoryFiles[alias].ToArray());
         }
 
         db.Dispose();
@@ -68,11 +68,12 @@ public sealed class ConnectionManager
         {
             db.GetCollection<T>(collection).Insert(documents);
         }
-
-        return EnumsLiteDbMemory.Output.DB_NOT_FOUND;
+        
+        db.Checkpoint();
+        return EnumsLiteDbMemory.Output.SUCCESS;
     }
 
-    public ILiteCollection<T>? GetCollation<T>(string alias, string collection)
+    public ILiteCollection<T>? GetCollection<T>(string alias, string collection)
     {
         return _databases.TryGetValue(alias, out LiteDatabase? db) ? db.GetCollection<T>(collection) : null;
     }
@@ -88,21 +89,6 @@ public sealed class ConnectionManager
         if (_databases.TryGetValue(alias, out LiteDatabase? db))
         {
             var documents = Tools.ReadJson<List<T>>(path);
-            
-            if (!db.CollectionExists(collection))
-            {
-                if (useInsertBulk)
-                {
-                    db.GetCollection<T>(collection).InsertBulk(documents);
-                }
-                else
-                {
-                    db.GetCollection<T>(collection).Insert(documents);
-                }
-                
-                return EnumsLiteDbMemory.Output.SUCCESS;
-            }
-
             if (useInsertBulk)
             {
                 db.GetCollection<T>(collection).InsertBulk(documents);
@@ -128,7 +114,7 @@ public sealed class ConnectionManager
             } 
             
             _memoryFiles.Add(alias, new MemoryStream());
-            _databases.Add(alias, new LiteDatabase(new MemoryStream()));
+            _databases.Add(alias, new LiteDatabase(_memoryFiles[alias]));
             
             return EnumsLiteDbMemory.Output.SUCCESS;
         }
@@ -164,6 +150,5 @@ public sealed class ConnectionManager
         return _instance ??= new ConnectionManager();
     }
 
-    
     #endregion
 }

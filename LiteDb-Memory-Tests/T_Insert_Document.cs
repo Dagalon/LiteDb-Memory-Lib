@@ -4,7 +4,7 @@ using LiteDB;
 namespace LiteDb_Memory_Tests;
 
 
-public class T_Insert_Document
+public class InsertDocument
 {
     
     [SetUp]
