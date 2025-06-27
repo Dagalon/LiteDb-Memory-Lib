@@ -13,18 +13,18 @@ public class Tests
     [Test]
     public void T_Create_Data_Base()
     {
-        var alias_shared = "Test_Db_Shared";
+        var aliasShared = "Test_Db_Shared";
         var alias = "Test_Db";
         
         var manager = ConnectionManager.Instance();
         
         // Create shared database 
-        manager.CreateDatabase(alias_shared, isShared: true);
+        manager.CreateDatabase(aliasShared, isShared: true);
         
         // Create database
         manager.CreateDatabase(alias);
         
-        manager.Close(alias_shared);
+        manager.Close(aliasShared);
         manager.Close(alias);
     }
     
@@ -50,13 +50,12 @@ public class Tests
        
         // Write to disk
         var folderPath = "D:\\GitHubRepository\\C#\\LiteDb-Memory-Lib\\LiteDb-Memory-Tests\\Data";
-        var pathToKeep = Path.Combine(folderPath, "Test_Db_Shared.txt");
+        var pathToKeep = Path.Combine(folderPath, "Test_Db_Shared.bin");
         manager.Close(aliasDb, pathToKeep);
         
         // Load again the database
         manager.CreateDatabase(aliasDb, pathToKeep);
-        var collection = manager.GetCollection<BsonDocument>(aliasDb, "personal_data");
-        var element = collection?.FindById(customer["_id"]);
+        var element = FilterTools.FindById<BsonDocument>(manager, aliasDb, "personal_data", customer["_id"]);
         
         Assert.That(element, Is.Not.Null);
     }

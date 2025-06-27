@@ -13,22 +13,22 @@ public class InsertDocument
     }
 
     [Test]
-    public void T_Insert_One_Document()
+    public void T_Insert_One_BsonDocument()
     {
         var customer1 = new BsonDocument
         {
             ["_id"] = ObjectId.NewObjectId(),
-            ["Name"] = "David Garcia Lorite",
+            ["Name"] = "David",
             ["CreateDate"] = DateTime.Now,
-            ["Phones"] = new BsonArray { "658576981" },
+            ["Phones"] = new BsonArray { "657488951" },
             ["IsActive"] = true,
             ["IsAdmin"] = new BsonValue(true),
             ["Address"] = new BsonDocument
             {
-                ["Street"] = "Calle Solidaridad",
-                ["City"] = "Madrid",
-                ["State"] = "Spain",
-                ["ZipCode"] = "28942"
+                ["Street"] = "Calle Lucifer",
+                ["City"] = "Comunity",
+                ["State"] = "Land",
+                ["ZipCode"] = "258525"
             }
         };
 

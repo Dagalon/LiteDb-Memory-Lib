@@ -83,7 +83,6 @@ public sealed class ConnectionManager
         return _databases.TryGetValue(alias, out LiteDatabase? db) ? db.GetCollectionNames().ToList() : [];
     }
 
-
     public EnumsLiteDbMemory.Output CreateCollection<T>(string alias, string collection, string path, bool useInsertBulk=false)
     {
         if (_databases.TryGetValue(alias, out LiteDatabase? db))
