@@ -23,7 +23,6 @@ public static class FilterTools
         return collection is not null ? collection.FindOne(qry) : default;
     }
     
-    
     public static List<T>? Find<T>(ConnectionManager manager, string alias, string collectionName, Query qry)
     {
         var collection = manager.GetCollection<T>(alias,collectionName);
@@ -41,5 +40,17 @@ public static class FilterTools
         var collection = manager.GetCollection<T>(alias,collectionName);
         return collection is null ? default : collection.FindById(id);
     }
-
+    
+    public static T? FindById<T,TOutput>(ConnectionManager manager, string alias, string collectionName,
+        Expression<Func<T,TOutput>> refFunctional, BsonValue id)
+    {
+        var collection = manager.GetCollection<T>(alias,collectionName);
+        return collection is null ? default : collection.Include(refFunctional).FindById(id);
+    }
+    
+    public static List<T>? FindAll<T>(ConnectionManager manager, string alias, string collectionName, BsonValue id)
+    {
+        var collection = manager.GetCollection<T>(alias,collectionName);
+        return collection?.FindAll().ToList();
+    }
 }

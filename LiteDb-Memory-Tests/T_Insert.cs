@@ -15,7 +15,7 @@ public class InsertDocument
     [Test]
     public void T_Insert_One_BsonDocument()
     {
-        var customer1 = new BsonDocument
+        var customer = new BsonDocument
         {
             ["_id"] = ObjectId.NewObjectId(),
             ["Name"] = "David",
@@ -42,7 +42,7 @@ public class InsertDocument
         manager.CreateDatabase(aliasDb);
         
         // Create collection
-        manager.CreateCollection<BsonDocument>(aliasDb,collection, [customer1]);
+        manager.CreateCollection<BsonDocument>(aliasDb,collection, [customer]);
         
         // Get collection names
         var collectionNames = manager.GetCollectionNames(aliasDb);

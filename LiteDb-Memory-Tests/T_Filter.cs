@@ -20,9 +20,6 @@ public struct Phone
         return long.Parse($"00{Prefix}{Number}");
     }
 }
-
-
-
 public struct Customer(ObjectId customerId, string name, DateTime createdDate, List<Phone> phones, bool isActive)
 {
     public ObjectId CustomerId { get; set; } = customerId;
