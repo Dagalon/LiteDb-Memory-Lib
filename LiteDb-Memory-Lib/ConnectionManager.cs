@@ -80,6 +80,11 @@ public sealed class ConnectionManager
         return _databases.TryGetValue(alias, out LiteDatabase? db) ? db.GetCollection<T>(collection) : null;
     }
 
+    public LiteDatabase? GetDatabase(string alias)
+    {
+        return _databases.GetValueOrDefault(alias);
+    }
+
     public List<string> GetCollectionNames(string alias)
     {
         return _databases.TryGetValue(alias, out LiteDatabase? db) ? db.GetCollectionNames().ToList() : [];
