@@ -54,9 +54,8 @@ public sealed class ConnectionManager
 
         return EnumsLiteDbMemory.Output.SUCCESS;
     }
-
-
-    public EnumsLiteDbMemory.Output CreateCollection<T>(string alias, string collection, List<T>? documents = null, bool useInsertBulk=false)
+    public EnumsLiteDbMemory.Output CreateCollection<T>(string alias, string collection, List<T>? documents = null, 
+        bool useInsertBulk=false)
     {
         if (!_databases.TryGetValue(alias, out LiteDatabase? db)) return EnumsLiteDbMemory.Output.DB_NOT_FOUND;
         
