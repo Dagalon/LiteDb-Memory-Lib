@@ -8,7 +8,8 @@ public static class EnumsLiteDbMemory
         DB_NOT_FOUND=2,
         PATH_NOT_FOUND=3,
         THERE_EXISTS_DATABASE=4,
-        PATH_IS_NULL_OR_EMPTY=5
+        PATH_IS_NULL_OR_EMPTY=5,
+        COLLECTION_NOT_FOUND=6
     }
 
 
