@@ -38,9 +38,7 @@ public static class GeneralTools
     {
         var results = manager.GetDatabase(alias)?.Execute(qry);
 
-        if (results != null) return BsonDataReaderToObject<T>(results);
-        
-        return null;
+        return results != null ? BsonDataReaderToObject<T>(results) : null;
     }
     
     public static List<T>? BsonDataReaderToObject<T>(IBsonDataReader reader) 
@@ -48,7 +46,7 @@ public static class GeneralTools
         var output  = new List<T>();
         while (reader.Read())
         {
-            var doc = (BsonDocument)reader["$"];
+            var doc = (BsonDocument)reader.Current;
             output.Add(BsonMapper.Global.ToObject<T>(doc));
         }
         return output;
