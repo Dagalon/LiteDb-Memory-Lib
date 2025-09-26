@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CsvHelper;
 using Microsoft.Data.Sqlite;
-using System.Data;
 
 namespace SqliteDB_Memory_Lib
 {
@@ -11,8 +10,8 @@ namespace SqliteDB_Memory_Lib
     {
         public static string CreateDatabase(string? idDataBase, string path, bool walMode = false, object? dependency = null)
         {
-            SqliteConnection connection = SqLiteSingleton.GetInstance(null).GetConnection();
-            List<string>? listDataBase = GetListDataBase(connection);
+            var connection = ConnectionManager.GetInstance(null).GetConnection();
+            var listDataBase = GetListDataBase(connection);
 
             if (listDataBase != null && idDataBase != null && listDataBase.Contains(idDataBase))
             {
@@ -33,7 +32,7 @@ namespace SqliteDB_Memory_Lib
                
             if (KeeperRegisterIdDataBase.CheckPathDataBase(path))
             {
-                string idRegistered = KeeperRegisterIdDataBase.GetIdDataBase(path);
+                var idRegistered = KeeperRegisterIdDataBase.GetIdDataBase(path);
                 throw new Exception($"The path '{path}' has associated the data base '{idRegistered}'");
             }
 
@@ -90,13 +89,7 @@ namespace SqliteDB_Memory_Lib
                 csv.Read();
            
                 var values = new List<List<object>>();
-                var firstRow = new List<object>();
-           
-                foreach (string field in fields)
-                {  
-                    var fieldValue = NetTypeToSqLiteType.StrTryParse(csv.GetField(field));
-                    firstRow.Add(fieldValue.Item1);
-                }
+                var firstRow = fields.Select(field => NetTypeToSqLiteType.StrTryParse(csv.GetField(field))).Select(fieldValue => fieldValue.Item1).ToList();
 
                 values.Add(firstRow);
            
@@ -155,12 +148,12 @@ namespace SqliteDB_Memory_Lib
                     }
                     reader.Close();
                
-                    int noRows = values.Count;
-                    int noColumns = values[0].Count;
-                    object[,] arrayValues = new object[noRows, noColumns];
-                    for (int i = 0; i < noRows; i++)
+                    var noRows = values.Count;
+                    var noColumns = values[0].Count;
+                    var arrayValues = new object[noRows, noColumns];
+                    for (var i = 0; i < noRows; i++)
                     {
-                        for (int j = 0; j < noColumns; j++)
+                        for (var j = 0; j < noColumns; j++)
                         {
                             arrayValues[i, j] = values[i][j];
                         }
@@ -327,51 +320,36 @@ namespace SqliteDB_Memory_Lib
                 }
             }
 
-        public static string SustituteParameters(string qryFilePath, Dictionary<string, string> parameters)
+        public static string SubstituteParameters(string qryFilePath, Dictionary<string, string> parameters)
         {
             if (File.Exists(Path.GetFullPath(qryFilePath)))
             {
                 var fs = new FileStream(Path.GetFullPath(qryFilePath), FileMode.Open , FileAccess.Read, FileShare.ReadWrite);
-                StreamReader reader = new StreamReader(fs, Encoding.UTF8);
+                var reader = new StreamReader(fs, Encoding.UTF8);
                 var qry = reader.ReadToEnd();
                
                 reader.Close();
                 fs.Close();
 
-                foreach (var param in parameters.Keys)
-                {
-                    qry = qry.Replace(param, parameters[param], StringComparison.OrdinalIgnoreCase);
-                    // qry = Regex.Replace(qry, param, parameters[param], RegexOptions.IgnoreCase);
-                }
-
-                return qry;
+                return parameters.Keys.Aggregate(qry, (current, param) => current.Replace(param, parameters[param], StringComparison.OrdinalIgnoreCase));
             }
-            else
-            {
-                throw new FileNotFoundException("File not found -" + qryFilePath);
 
-            }
-           
+            throw new FileNotFoundException("File not found -" + qryFilePath);
+
         }
-        public static List<Dictionary<string, object>> ExecuteQryReader(SqliteConnection db, string qryFilePath, Dictionary<string, string> parameters)
+        public static List<Dictionary<string, object>> ExecuteQryReader(SqliteConnection db, string qryFilePath, Dictionary<string, string>? parameters)
             {
                 if (File.Exists(Path.GetFullPath(qryFilePath)))
                 {
                     var fs = new FileStream(Path.GetFullPath(qryFilePath), FileMode.Open , FileAccess.Read, FileShare.ReadWrite);
-                    StreamReader reader = new StreamReader(fs, Encoding.UTF8);
+                    var reader = new StreamReader(fs, Encoding.UTF8);
                     var qryToExecute = reader.ReadToEnd();
                    
                     reader.Close();
                     fs.Close();
                    
-                    if (parameters==null)
-                    {
-                        return QueryExecutor.ExecuteQryReader(db, qryToExecute);
-                    }
-                    else
-                    {
-                        return QueryExecutor.ExecuteQryReader(db, qryToExecute, parameters);
-                    }
+                    return parameters is null ? QueryExecutor.ExecuteQryReader(db, qryToExecute) 
+                        : QueryExecutor.ExecuteQryReader(db, qryToExecute, parameters);
                 }
                 else
                 {
@@ -395,13 +373,13 @@ namespace SqliteDB_Memory_Lib
 
         public static object[] GetListParameters(string qryFilePath, string qry)
         {
-            string qryToExecute = "";  
+            var qryToExecute = "";  
             if (string.IsNullOrEmpty(qry))
             {
                 if (File.Exists(qryFilePath))
                 {
                     var fs = new FileStream(Path.GetFullPath(qryFilePath), FileMode.Open , FileAccess.Read, FileShare.ReadWrite);
-                    StreamReader reader = new StreamReader(fs, Encoding.UTF8);
+                    var reader = new StreamReader(fs, Encoding.UTF8);
                     qryToExecute = reader.ReadToEnd();
                    
                     reader.Close();
@@ -419,14 +397,11 @@ namespace SqliteDB_Memory_Lib
                 qryToExecute = qry;
             }
 
-            if (qryToExecute.Contains('@'))
-            {
-                var matchExpression = MyRegex().Matches(qryToExecute);
-                return matchExpression.OfType<Match>().ToList().Select(object (m) => m.Value).ToArray().Distinct().ToArray();
-            }
-           
-            return [string.Empty];
-           
+            if (!qryToExecute.Contains('@')) return [string.Empty];
+            
+            var matchExpression = MyRegex().Matches(qryToExecute);
+            return matchExpression.OfType<Match>().ToList().Select(object (m) => m.Value).ToArray().Distinct().ToArray();
+
         }
 
         public static string DropTable(SqliteConnection db, string idDataBase, string idTable)
@@ -438,22 +413,20 @@ namespace SqliteDB_Memory_Lib
 
             var listTables = GetListTables(db, idDataBase);
 
-            if (listTables != null && listTables.Contains(idTable))
-            {
-                string qry = $"DROP TABLE {idDataBase}.{idTable}";
-                SqliteCommand cmd = new SqliteCommand(qry, db);
-                cmd.ExecuteReader();
-                return "";
+            if (listTables == null || !listTables.Contains(idTable))
+                return $"The data base {idDataBase} doesn't contain the table {idTable}";
+            
+            var qry = $"DROP TABLE {idDataBase}.{idTable}";
+            var cmd = new SqliteCommand(qry, db);
+            cmd.ExecuteReader();
+            return "";
 
-            }
-
-            return $"The data base {idDataBase} doesn't contain the table {idTable}";
         }
 
         public static void DeleteDataBase(SqliteConnection db, string idDatabase)
         {
-            string qry = $"DETACH DATABASE {idDatabase}";
-            SqliteCommand cmd = new SqliteCommand(qry, db);
+            var qry = $"DETACH DATABASE {idDatabase}";
+            var cmd = new SqliteCommand(qry, db);
             cmd.ExecuteReader();
         }
 

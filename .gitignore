@@ -7,10 +7,9 @@ LiteDb-Memory-Tests/bin/*
 LiteDb-Memory-Tests/.idea/*
 LiteDb-Memory-Lib/global.json
 MSBuild/LiteDb-Memory-Lib.sln.DotSettings.user
-/Sqlite-Memory-Lib/.idea
-/Sqlite-Memory-Lib/bin
-/Sqlite-Memory-Lib/obj
-
-
-/SqliteDB-Memory-Lib/obj
-/SqliteDB-Memory-Lib/bin
+/SqliteDb-Memory-Lib/obj
+/SqliteDb-Memory-Lib/bin
+/SqliteDb-Memory-Lib/.idea
+/SqliteDB-Memory-Tests/obj
+/SqliteDB-Memory-Tests/bin
+/SqliteDB-Memory-Tests/.idea

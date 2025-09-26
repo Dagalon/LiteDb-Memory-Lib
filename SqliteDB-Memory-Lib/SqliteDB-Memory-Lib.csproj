@@ -2,14 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-        <RootNamespace>SqliteDB_Memory_Lib</RootNamespace>
+        <RootNamespace>SqliteDb_Memory_Lib</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="CsvHelper" Version="33.1.0" />
-      <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
-    </ItemGroup>
-
 </Project>

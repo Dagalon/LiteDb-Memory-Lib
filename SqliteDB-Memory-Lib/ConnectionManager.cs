@@ -4,18 +4,18 @@ using System.Data;
 
 namespace SqliteDB_Memory_Lib
 {
-    public sealed class SqLiteSingleton
+    public sealed class ConnectionManager
     {
-        private static SqLiteSingleton? _instance;
+        private static ConnectionManager? _instance;
         private static readonly SqliteConnection _connection = SqLiteLiteTools.GetInstance(null);
         
-        private SqLiteSingleton()
+        private ConnectionManager()
         {
         }
 
-        public static SqLiteSingleton GetInstance(string? path)
+        public static ConnectionManager GetInstance(string? path)
         {
-            return _instance ??= new SqLiteSingleton();
+            return _instance ??= new ConnectionManager();
         }
 
         public  SqliteConnection GetConnection()

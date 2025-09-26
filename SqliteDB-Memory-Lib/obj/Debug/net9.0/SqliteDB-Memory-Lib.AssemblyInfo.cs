@@ -10,11 +10,13 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("SqliteDB-Memory-Lib")]
+[assembly: System.CLSCompliantAttribute(true)]
+[assembly: System.Reflection.AssemblyCompanyAttribute("QuantLand")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2025")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a15b4dd2864d2b5a7876113f80dfb902f07f1dd0")]
-[assembly: System.Reflection.AssemblyProductAttribute("SqliteDB-Memory-Lib")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e3c6eb41c280785af364df2de390374d0741deb")]
+[assembly: System.Reflection.AssemblyProductAttribute("Light database")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SqliteDB-Memory-Lib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
