@@ -7,14 +7,14 @@ namespace SqliteDB_Memory_Lib
         public static T[,] SubArray<T>(this T[,] values, int rowMin, int rowMax, int colMin, int colMax)
         {
             // Allocate the result array.
-            int numRows = rowMax - rowMin;
-            int numCols = colMax - colMin;
+            var numRows = rowMax - rowMin;
+            var numCols = colMax - colMin;
             T[,] result = new T[numRows, numCols];
 
             // Get the number of columns in the values array.
-            int totalCols = values.GetUpperBound(1) + 1;
-            int fromIndex = rowMin * totalCols + colMin;
-            int toIndex = 0;
+            var totalCols = values.GetUpperBound(1) + 1;
+            var fromIndex = rowMin * totalCols + colMin;
+            var toIndex = 0;
             for (int row = 0; row < numRows; row++)
             {
                 Array.Copy(values, fromIndex, result, toIndex, numCols);
@@ -27,13 +27,13 @@ namespace SqliteDB_Memory_Lib
 
         public static List<List<T>> SubArrayToList<T>(this T[,] values, int rowMin, int rowMax, int colMin, int colMax)
         {
-            List<List<T>> result = new List<List<T>>();
-            int rowCounter = 0;
+            var result = new List<List<T>>();
+            var rowCounter = 0;
 
-            for (int row = rowMin; row < rowMax; row++)
+            for (var row = rowMin; row < rowMax; row++)
             {
                 result.Add(new List<T>());
-                for (int col = colMin; col < colMax; col++)
+                for (var col = colMin; col < colMax; col++)
                 {
                     result[rowCounter].Add(values[row, col]);
                 }
@@ -46,9 +46,9 @@ namespace SqliteDB_Memory_Lib
        
         public static T[,] To2D<T>(this T[] array)
         {
-            int noElements = array.Length;
+            var noElements = array.Length;
             T[,] output = new T[noElements,1];
-            for (int i = 0; i < noElements; i++)
+            for (var i = 0; i < noElements; i++)
             {
                 output[i, 0] = array[i];
             }
@@ -67,15 +67,15 @@ namespace SqliteDB_Memory_Lib
             if (s == null)
                 return null;
 
-            if (String.IsNullOrEmpty(oldValue))
+            if (string.IsNullOrEmpty(oldValue))
                 return s;
 
-            StringBuilder result = new StringBuilder(Math.Min(4096, s.Length));
-            int pos = 0;
+            var result = new StringBuilder(Math.Min(4096, s.Length));
+            var pos = 0;
 
             while (true)
             {
-                int i = s.IndexOf(oldValue, pos, comparisonType);
+                var i = s.IndexOf(oldValue, pos, comparisonType);
                 if (i < 0)
                     break;
 

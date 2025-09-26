@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SqliteDB-Memory-Lib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a15b4dd2864d2b5a7876113f80dfb902f07f1dd0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49e5efa3851c0c69b80895ed6969a232f707b543")]
 [assembly: System.Reflection.AssemblyProductAttribute("SqliteDB-Memory-Lib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SqliteDB-Memory-Lib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

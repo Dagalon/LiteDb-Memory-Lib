@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CsvHelper;
 using Microsoft.Data.Sqlite;
-using System.Data;
 
 namespace SqliteDB_Memory_Lib
 {
@@ -11,8 +10,8 @@ namespace SqliteDB_Memory_Lib
     {
         public static string CreateDatabase(string? idDataBase, string path, bool walMode = false, object? dependency = null)
         {
-            SqliteConnection connection = SqLiteSingleton.GetInstance(null).GetConnection();
-            List<string>? listDataBase = GetListDataBase(connection);
+            var connection = ConnectionManager.GetInstance(null).GetConnection();
+            var listDataBase = GetListDataBase(connection);
 
             if (listDataBase != null && idDataBase != null && listDataBase.Contains(idDataBase))
             {
@@ -33,7 +32,7 @@ namespace SqliteDB_Memory_Lib
                
             if (KeeperRegisterIdDataBase.CheckPathDataBase(path))
             {
-                string idRegistered = KeeperRegisterIdDataBase.GetIdDataBase(path);
+                var idRegistered = KeeperRegisterIdDataBase.GetIdDataBase(path);
                 throw new Exception($"The path '{path}' has associated the data base '{idRegistered}'");
             }
 
@@ -90,13 +89,7 @@ namespace SqliteDB_Memory_Lib
                 csv.Read();
            
                 var values = new List<List<object>>();
-                var firstRow = new List<object>();
-           
-                foreach (string field in fields)
-                {  
-                    var fieldValue = NetTypeToSqLiteType.StrTryParse(csv.GetField(field));
-                    firstRow.Add(fieldValue.Item1);
-                }
+                var firstRow = fields.Select(field => NetTypeToSqLiteType.StrTryParse(csv.GetField(field))).Select(fieldValue => fieldValue.Item1).ToList();
 
                 values.Add(firstRow);
            
@@ -155,12 +148,12 @@ namespace SqliteDB_Memory_Lib
                     }
                     reader.Close();
                
-                    int noRows = values.Count;
-                    int noColumns = values[0].Count;
-                    object[,] arrayValues = new object[noRows, noColumns];
-                    for (int i = 0; i < noRows; i++)
+                    var noRows = values.Count;
+                    var noColumns = values[0].Count;
+                    var arrayValues = new object[noRows, noColumns];
+                    for (var i = 0; i < noRows; i++)
                     {
-                        for (int j = 0; j < noColumns; j++)
+                        for (var j = 0; j < noColumns; j++)
                         {
                             arrayValues[i, j] = values[i][j];
                         }

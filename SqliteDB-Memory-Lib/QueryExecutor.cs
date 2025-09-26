@@ -11,27 +11,27 @@ namespace SqliteDB_Memory_Lib
             object[,] values, string extraEnd)
         {
          
-            List<string> filteredFields =
+            var filteredFields =
                 fields.Select((field, i) => Regex.Replace(field, @"[^0-9-a-zA-Z]" , "").Replace("\"", "").Replace(" ", "")).ToList();
-            string insertParameters = string.Join(",", filteredFields.Select((field, i) => "@" + field).ToList());
+            var insertParameters = string.Join(",", filteredFields.Select((field, i) => "@" + field).ToList());
 
-            string qry = !string.IsNullOrEmpty(extraEnd)
+            var qry = !string.IsNullOrEmpty(extraEnd)
                 ? $"INSERT INTO {idDataBase}.{idTable} ({string.Join(",", fields)}) VALUES ({insertParameters}) {extraEnd}"
                 : $"INSERT INTO {idDataBase}.{idTable} ({string.Join(",", fields)}) VALUES ({insertParameters})";
 
             lock (db)
             {
                 var transaction = db.BeginTransaction();
-                int noRows = values.GetLength(0);
-                int noColumns = values.GetLength(1);
+                var noRows = values.GetLength(0);
+                var noColumns = values.GetLength(1);
 
-                SqliteCommand cmd = db.CreateCommand();
+                var cmd = db.CreateCommand();
                 cmd.Transaction = transaction;
                 cmd.CommandText = qry;
 
                 try
                 {
-                    for (int i = 0; i < noRows; i++)
+                    for (var i = 0; i < noRows; i++)
                     {
                         cmd.CommandText = qry;
                         var row = values.SubArrayToList(i, i + 1, 0, noColumns)[0];
@@ -68,13 +68,11 @@ namespace SqliteDB_Memory_Lib
         {
 
             var fieldsDefinition = new List<string>();
-
-           
-            int noFields = headers.Count;
+            var noFields = headers.Count;
 
             if (types is null)
             {
-                for (int i = 0; i < noFields; i++)
+                for (var i = 0; i < noFields; i++)
                 {
                     fieldsDefinition.Add(headers[i]);
                 }
@@ -82,7 +80,7 @@ namespace SqliteDB_Memory_Lib
             }
             else
             {
-                for (int i = 0; i < noFields; i++)
+                for (var i = 0; i < noFields; i++)
                 {
                     var t = NetTypeToSqLiteType.GetDBType(types[i]);
                     fieldsDefinition.Add(headers[i] + " " + t);
@@ -100,7 +98,7 @@ namespace SqliteDB_Memory_Lib
         public static List<Dictionary<string, object>>? Select(SqliteConnection db, string idDataBase, string idTable,
                                                               string select, string where, string groupBy, string orderBy)
         {
-            string qry = $"SELECT {select} FROM {idDataBase}.{idTable} WHERE {where} GROUP BY {groupBy} ORDER BY {orderBy}";
+            var qry = $"SELECT {select} FROM {idDataBase}.{idTable} WHERE {where} GROUP BY {groupBy} ORDER BY {orderBy}";
 
             if (string.IsNullOrEmpty(where))
             {
@@ -117,9 +115,8 @@ namespace SqliteDB_Memory_Lib
                 qry = qry.Replace("ORDER BY", "");
             }
 
-            SqliteCommand cmd = new SqliteCommand(qry, db);
+            var cmd = new SqliteCommand(qry, db);
             var qryResult = cmd.ExecuteReader();
-
             var resultList = new List<Dictionary<string, object>>();
 
             if (qryResult.HasRows)
@@ -141,24 +138,21 @@ namespace SqliteDB_Memory_Lib
 
         public static void ExecuteQryNotReader(SqliteConnection db, string qry)
         {
-            SqliteCommand cmd = new SqliteCommand(qry, db);
+            var cmd = new SqliteCommand(qry, db);
             cmd.ExecuteNonQuery();
         }
 
         public static void ExecuteQryNotReader(SqliteConnection db, string qry, Dictionary<string, string> parameters)
         {
-            foreach (var param in parameters.Keys)
-            {
-                qry = qry.Replace(param, parameters[param], StringComparison.OrdinalIgnoreCase);
-            }
-           
-            SqliteCommand cmd = new SqliteCommand(qry, db);
+            qry = parameters.Keys.Aggregate(qry, (current, param) => current.Replace(param, parameters[param], StringComparison.OrdinalIgnoreCase));
+
+            var cmd = new SqliteCommand(qry, db);
             cmd.ExecuteNonQuery();
         }
 
         public static List<Dictionary<string, object>> ExecuteQryReader(SqliteConnection db, string qry)
         {
-            SqliteCommand cmd = new SqliteCommand(qry, db);
+            var cmd = new SqliteCommand(qry, db);
             var qryResult = cmd.ExecuteReader();
 
             var resultList = new List<Dictionary<string, object>>();
@@ -171,8 +165,6 @@ namespace SqliteDB_Memory_Lib
                         .ToDictionary(qryResult.GetName, qryResult.GetValue));
                 }
 
-                qryResult.Close();
-                return resultList;
             }
 
             qryResult.Close();
@@ -181,11 +173,7 @@ namespace SqliteDB_Memory_Lib
 
         public static List<Dictionary<string, object>> ExecuteQryReader(SqliteConnection db, string qry, Dictionary<string, string> parameters)
         {
-            foreach (var param in parameters.Keys)
-            {
-                qry = qry.Replace(param, parameters[param], StringComparison.OrdinalIgnoreCase);
-                // qry = Regex.Replace(qry, param, parameters[param], RegexOptions.IgnoreCase);
-            }
+            qry = parameters.Keys.Aggregate(qry, (current, param) => current.Replace(param, parameters[param], StringComparison.OrdinalIgnoreCase));
 
             return ExecuteQryReader(db, qry);
         }
