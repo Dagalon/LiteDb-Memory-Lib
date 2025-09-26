@@ -38,7 +38,7 @@ public class InsertDocument
         
         var manager = ConnectionManager.Instance();
         
-        // Create shared database f
+        // Create shared database
         manager.CreateDatabase(aliasDb);
         
         // Create collection
