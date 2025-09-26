@@ -13,3 +13,4 @@ MSBuild/LiteDb-Memory-Lib.sln.DotSettings.user
 
 
 /SqliteDB-Memory-Lib/obj
+/SqliteDB-Memory-Lib/bin
