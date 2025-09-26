@@ -49,7 +49,7 @@ public class Tests
         manager.CreateCollection(aliasDb, "personal_data",[customer]);
        
         // Write to disk
-        var folderPath = "D:\\GitHubRepository\\C#\\LiteDb-Memory-Lib\\LiteDb-Memory-Tests\\Data";
+        var folderPath = "C:\\GitRepositories\\Net\\C#\\LiteDb-Memory-Lib-develop\\LiteDb-Memory-Tests\\Data";
         var pathToKeep = Path.Combine(folderPath, "Test_Db_Shared.bin");
         manager.Close(aliasDb, pathToKeep);
         

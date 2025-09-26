@@ -7,11 +7,13 @@ public sealed class ConnectionManager
     #region Atrributes
     
     private static ConnectionManager? _instance;
+    
     private static Dictionary<string, LiteDatabase> _databases = null!;
+    
     private static Dictionary<string, MemoryStream> _memoryFiles = null!;
     
     #endregion
-    
+
     #region Contructors
 
     private ConnectionManager()
@@ -21,18 +23,16 @@ public sealed class ConnectionManager
     }
 
     #endregion
-    
-    #region Methods
 
-    public static LiteDatabase? GetDatabase(string alias, bool createIfNotExists = false)
+    #region Methods
+ 
+    public  LiteDatabase? GetDatabase(string alias)
     {
         if (_databases.TryGetValue(alias, out LiteDatabase? value))
         {
             return value;
-        }
-
-        if (!createIfNotExists) return null;
-       
+        } 
+        
         _databases.Add(alias, new LiteDatabase(":memory:"));
         return _databases[alias];
     }
@@ -55,23 +55,30 @@ public sealed class ConnectionManager
         return EnumsLiteDbMemory.Output.SUCCESS;
     }
 
-   
-
     public EnumsLiteDbMemory.Output CreateCollection<T>(string alias, string collection, List<T>? documents = null, 
-        bool useInsertBulk=false)
+        bool useInsertBulk=false) where T : new()
     {
         if (!_databases.TryGetValue(alias, out LiteDatabase? db)) return EnumsLiteDbMemory.Output.DB_NOT_FOUND;
-        
-        if (useInsertBulk)
+
+        if (documents is not null)
         {
-            db.GetCollection<T>(collection).InsertBulk(documents);
+            if (useInsertBulk)
+            {
+                db.GetCollection<T>(collection).InsertBulk(documents);
+            }
+            else
+            {
+                db.GetCollection<T>(collection).Insert(documents);
+            }
+
+            db.Checkpoint();
         }
         else
         {
-            db.GetCollection<T>(collection).Insert(documents);
+            db.GetCollection<T>(collection).Insert([new T()]);
+            db.Checkpoint();
         }
-        
-        db.Checkpoint();
+
         return EnumsLiteDbMemory.Output.SUCCESS;
     }
 
@@ -80,11 +87,7 @@ public sealed class ConnectionManager
         return _databases.TryGetValue(alias, out LiteDatabase? db) ? db.GetCollection<T>(collection) : null;
     }
 
-    public LiteDatabase? GetDatabase(string alias)
-    {
-        return _databases.GetValueOrDefault(alias);
-    }
-
+   
     public List<string> GetCollectionNames(string alias)
     {
         return _databases.TryGetValue(alias, out LiteDatabase? db) ? db.GetCollectionNames().ToList() : [];
