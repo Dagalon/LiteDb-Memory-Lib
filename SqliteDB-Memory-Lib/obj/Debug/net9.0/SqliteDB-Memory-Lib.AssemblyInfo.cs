@@ -10,12 +10,11 @@
 using System;
 using System.Reflection;
 
-[assembly: System.CLSCompliantAttribute(true)]
 [assembly: System.Reflection.AssemblyCompanyAttribute("QuantLand")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2025")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e3c6eb41c280785af364df2de390374d0741deb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ab9d36f237fd33c14512dc331ae09b79389ef61")]
 [assembly: System.Reflection.AssemblyProductAttribute("Light database")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SqliteDB-Memory-Lib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -47,6 +47,8 @@ namespace SqliteDB_Memory_Lib
 
                             cmd.ExecuteNonQuery();
                         }
+                        
+                        cmd.Parameters.Clear();
                     }
 
                     transaction.Commit();
@@ -82,7 +84,7 @@ namespace SqliteDB_Memory_Lib
             {
                 for (var i = 0; i < noFields; i++)
                 {
-                    var t = NetTypeToSqLiteType.GetDBType(types[i]);
+                    var t = NetTypeToSqLiteType.GetDbType(types[i]);
                     fieldsDefinition.Add(headers[i] + " " + t);
                 }
                

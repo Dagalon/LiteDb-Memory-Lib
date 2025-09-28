@@ -13,7 +13,7 @@ namespace SqliteDB_Memory_Lib
         {
         }
 
-        public static ConnectionManager GetInstance(string? path)
+        public static ConnectionManager GetInstance()
         {
             return _instance ??= new ConnectionManager();
         }
@@ -93,24 +93,12 @@ namespace SqliteDB_Memory_Lib
 
         public static bool CheckPathDataBase(string path)
         {
-            if (_mapIdDataBase.ContainsKey(path))
-            {
-                return true;
-            }
-
-            return false;
-            
+            return _mapIdDataBase.ContainsKey(path);
         }
         
         public static bool CheckIdDataBase(string idDb)
         {
-            if (_mapIdDataBase.ContainsValue(idDb))
-            {
-                return true;
-            }
-
-            return false;
-            
+            return _mapIdDataBase.ContainsValue(idDb);
         }
 
         public static void register(string path, string idDataBase)

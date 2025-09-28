@@ -3,7 +3,7 @@ using LiteDB;
 
 namespace LiteDb_Memory_Tests;
 
-public class Tests
+public class Connection
 {
     [SetUp]
     public void Setup()
@@ -18,10 +18,10 @@ public class Tests
         
         var manager = ConnectionManager.Instance();
         
-        // Create shared database 
+        // Create a shared database 
         manager.CreateDatabase(aliasShared, isShared: true);
         
-        // Create database
+        // Create a database
         manager.CreateDatabase(alias);
         
         manager.Close(aliasShared);
@@ -34,7 +34,7 @@ public class Tests
         var aliasDb = "Test_Db";
         var manager = ConnectionManager.Instance();
         
-        // Create shared database 
+        // Create a shared database 
         manager.CreateDatabase(aliasDb, isShared: true);
 
         // Create BsonDocument
@@ -45,7 +45,7 @@ public class Tests
             ["role"] = "Developer"
         };
         
-        // Create collection
+        // Create a collection
         manager.CreateCollection(aliasDb, "personal_data",[customer]);
        
         // Write to disk

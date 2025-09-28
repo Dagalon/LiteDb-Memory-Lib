@@ -4,7 +4,7 @@ namespace SqliteDB_Memory_Lib
 {
     public static class NetTypeToSqLiteType
     {
-        public static DbType GetDBType(Type type)
+        public static DbType GetDbType(Type type)
         {
             return type switch
             {
