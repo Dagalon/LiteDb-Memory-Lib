@@ -61,45 +61,6 @@ The `feature-sqlite` branch integrates support for **SQLite** as a backend, enab
    dotnet test
    ```
 
-## Basic Usage
-
-```csharp
-using LiteDbMemoryLib.Sqlite;  // suggested namespace
-
-// Create an in-memory store with SQLite persistence
-var store = new SqliteMemoryStore(
-    sqliteFilePath: "data.db",
-    flushMode: FlushMode.OnCommit // or other modes
-);
-
-// Get or create a collection
-var users = store.GetCollection<User>("users");
-
-// Insert documents
-users.Insert(new User { Id = 1, Name = "Alice" });
-users.Insert(new User { Id = 2, Name = "Bob" });
-
-// Query with LINQ-like syntax
-var bobs = users.Find(u => u.Name == "Bob");
-
-// Persist (if not using immediate flush)
-await store.FlushAsync();
-
-// Release resources
-store.Dispose();
-```
-
-> **Note**: Adjust class/method names according to the actual API provided by this branch.
-
-## Synchronization Modes
-
-| Mode         | Description                              | Pros                 | Cons                      |
-|--------------|------------------------------------------|----------------------|---------------------------|
-| `OnCommit`   | Write-through to SQLite on every commit  | Strong durability    | Performance overhead      |
-| `Batch`      | Accumulate changes, flush in batches     | Better performance   | Higher crash risk         |
-| `ManualFlush`| User manually decides when to flush      | Full control         | Error handling required   |
-| `Readonly`   | Only read from SQLite                    | Load existing data   | No write support          |
-
 ## Current Limitations
 
 - Synchronization may add latency for large datasets.
