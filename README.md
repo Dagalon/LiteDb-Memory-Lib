@@ -16,15 +16,14 @@ The `feature-sqlite` branch integrates support for **SQLite** as a backend, enab
 ## Key Features (`feature-sqlite`)
 
 - Initialize in-memory database with optional SQLite persistence.
-- Fast read/write operations in memory with configurable flush/commit modes to SQLite.
+- Fast read/write operations in memory.
 - Serialization / deserialization of collections and documents.
-- Configurable options: SQLite file path, flush mode (immediate, deferred, batch).
 - LINQ-style queries, indexing, and filtering inherited from the memory layer.
 - Concurrency and locking mechanisms to avoid inconsistencies.
 
 ## Requirements
 
-- .NET (>= .NET 6.0 recommended)
+- .NET (>= .NET 8.0 recommended)
 - SQLite provider (`Microsoft.Data.Sqlite`, `System.Data.SQLite`, or compatible)
 - Dependencies from LiteDb-Memory-Lib base layer
 
