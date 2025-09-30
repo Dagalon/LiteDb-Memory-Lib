@@ -1,89 +1,68 @@
-# LiteDb-Memory-Lib (branch **feature-sqlite**)
-
-Version with **SQLite support**  
-(branch `feature-sqlite`)
+# LiteDb-Memory-Lib
 
 ## Overview
 
-LiteDb-Memory-Lib is a lightweight library designed to emulate the behavior of **LiteDB** (or other embedded databases) entirely in memory, while still providing persistence options.  
-The `feature-sqlite` branch integrates support for **SQLite** as a backend, enabling:
+LiteDb-Memory-Lib is an experimental extension for LiteDB that enables fully in-memory document database usage combined with the ability to leverage SQLite as an internal backend. This hybrid design allows developers to choose between the lightweight NoSQL mode of LiteDB or the robust, ACID-compliant relational capabilities of SQLite seamlessly within .NET applications.
 
-- Persistent storage using SQLite as the physical data store.
-- Hybrid queries: fast in-memory operations with SQLite synchronization.
-- Incremental synchronization between the volatile in-memory layer and the SQLite database.
-- Useful for scenarios requiring both high in-memory performance and durable persistence.
+## Features
 
-## Key Features (`feature-sqlite`)
-
-- Initialize in-memory database with optional SQLite persistence.
-- Fast read/write operations in memory.
-- Serialization / deserialization of collections and documents.
-- LINQ-style queries, indexing, and filtering inherited from the memory layer.
-- Concurrency and locking mechanisms to avoid inconsistencies.
-
-## Requirements
-
-- .NET (>= .NET 8.0 recommended)
-- SQLite provider (`Microsoft.Data.Sqlite`, `System.Data.SQLite`, or compatible)
-- Dependencies from LiteDb-Memory-Lib base layer
+- NoSQL document database compatible with LiteDB
+- Pure in-memory operation for ultra-fast, transient data handling
+- **Full integration with SQLite as a backend** allowing relational storage, SQL querying, and durability
+- Flexible mode switching between LiteDB document store and SQLite engine
+- API inspired by MongoDB and LiteDB with added power of SQL when using SQLite
+- Ideal for unit testing, prototyping, and smooth data migration between NoSQL and SQL worlds
+- Supports collections, indexes, LINQ queries, and SQLite SQL syntax in hybrid modes
+- Lightweight and embeddable for .NET projects
 
 ## Installation
 
-1. Clone the repository:
+dotnet add package LiteDb-Memory-Lib
 
-   ```bash
-   git clone https://github.com/Dagalon/LiteDb-Memory-Lib.git
-   cd LiteDb-Memory-Lib
-   ```
+text
 
-2. Checkout the branch:
+Or reference the compiled DLL in your project manually.
 
-   ```bash
-   git checkout feature-sqlite
-   ```
+## Basic Usage
 
-3. Restore packages:
+using LiteDbMemoryLib;
 
-   ```bash
-   dotnet restore
-   ```
+var db = new LiteDbMemoryDatabase();
+var col = db.GetCollection<MyClass>("entities");
+col.Insert(new MyClass { Name = "Test" });
+var results = col.FindAll().ToList();
 
-4. Build:
+text
 
-   ```bash
-   dotnet build
-   ```
+### Using SQLite Backend (Recommended for durability and SQL features)
 
-5. (Optional) Run tests:
+// Initialize database with SQLite backend for persistent and relational data
+var db = new LiteDbMemoryDatabase("Filename=:memory:; Mode=SQLite;");
 
-   ```bash
-   dotnet test
-   ```
+// Use SQL queries alongside NoSQL style document operations
+db.Execute("CREATE TABLE Sample (Id INTEGER PRIMARY KEY, Name TEXT);");
+db.Execute("INSERT INTO Sample (Name) VALUES ('Example');");
+var data = db.Query<Sample>("SELECT * FROM Sample WHERE Name = @name", new { name = "Example" });
 
-## Current Limitations
+text
 
-- Synchronization may add latency for large datasets.
-- Complex/nested objects may not map directly to SQLite tables.
-- Strong concurrency scenarios may require manual conflict resolution.
-- Schema migrations to SQLite may need manual handling.
-- Crash safety depends on flush mode.
+## When to Use SQLite Backend
 
-## Roadmap
+- When ACID-compliant transactional consistency is required  
+- For applications needing SQL query power alongside document storage  
+- To enable seamless migration or interoperability with existing SQLite databases  
+- When data durability and recovery are crucial beyond the lifetime of the process  
 
-- Automatic migrations when schema changes.
-- Compression or optimized serialization when persisting.
-- Partial caching/pagination for very large datasets.
-- SQLite WAL integration for better concurrency.
-- Performance metrics and monitoring.
+## Limitations
 
-## Contributing
+- In-memory mode loses data after the process ends  
+- Some advanced LiteDB-exclusive features might not fully carry over to SQLite mode  
+- The hybrid approach may have slight performance trade-offs depending on usage patterns  
 
-1. Fork the repository.
-2. Create a feature branch (e.g. `feature-indexing`, `improve-flush`).
-3. Implement your change with proper tests.
-4. Submit a pull request describing your improvement.
+## Credits
+
+Built upon LiteDB and SQLite, with contributions from the open-source community.
 
 ## License
 
-This project follows the same license as the root repository.  
-Please check the `LICENSE` file in the main branch for details.
+MIT license (see LICENSE file).
