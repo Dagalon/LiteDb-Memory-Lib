@@ -1,8 +1,5 @@
 using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading;
-
 
 namespace SqliteDB_Memory_Lib
 {
