@@ -1,44 +1,109 @@
 using Microsoft.Data.Sqlite;
 using System.Data;
 
-
 namespace SqliteDB_Memory_Lib
 {
     public sealed class ConnectionManager
     {
-        private static ConnectionManager? _instance;
-        private static readonly SqliteConnection _connection = SqLiteLiteTools.GetInstance(null);
-        
+        private static readonly Lazy<ConnectionManager> LazyInstance =
+            new(() => new ConnectionManager(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+        private readonly object _syncRoot = new();
+        private readonly Dictionary<string, SqliteConnection> _connections = new(StringComparer.OrdinalIgnoreCase);
+
         private ConnectionManager()
         {
         }
 
         public static ConnectionManager GetInstance()
         {
-            return _instance ??= new ConnectionManager();
+            return LazyInstance.Value;
         }
 
-        public  SqliteConnection GetConnection()
+        public SqliteConnection GetConnection(string? alias = null, string? path = null)
         {
-            if (_connection.State == ConnectionState.Open)
+            var normalizedAlias = NormalizeAlias(alias);
+
+            lock (_syncRoot)
             {
-                return _connection;
+                if (_connections.TryGetValue(normalizedAlias, out var existingConnection))
+                {
+                    EnsureOpen(existingConnection);
+                    return existingConnection;
+                }
+
+                var newConnection = SqLiteLiteTools.GetInstance(path);
+                EnsureOpen(newConnection);
+                _connections[normalizedAlias] = newConnection;
+
+                return newConnection;
             }
-
-            Open();
-            return _connection;
-
         }
 
-        private static void Open()
+        public void CloseConnection(string? alias = null)
         {
-            _connection.Open();
+            var normalizedAlias = NormalizeAlias(alias);
+
+            lock (_syncRoot)
+            {
+                if (!_connections.TryGetValue(normalizedAlias, out var connection))
+                {
+                    return;
+                }
+
+                try
+                {
+                    connection.Close();
+                }
+                finally
+                {
+                    connection.Dispose();
+                    _connections.Remove(normalizedAlias);
+                }
+            }
         }
 
-        public static void Close()
+        public void CloseAllConnections()
         {
-            _connection.Dispose();
-            _connection.Close();
+            lock (_syncRoot)
+            {
+                foreach (var connection in _connections.Values)
+                {
+                    try
+                    {
+                        connection.Close();
+                    }
+                    finally
+                    {
+                        connection.Dispose();
+                    }
+                }
+
+                _connections.Clear();
+            }
+        }
+
+        private static void EnsureOpen(SqliteConnection connection)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+        }
+
+        private static string NormalizeAlias(string? alias)
+        {
+            return string.IsNullOrWhiteSpace(alias) ? "default" : alias.Trim();
+        }
+
+        public static void Close(string? alias = null)
+        {
+            GetInstance().CloseConnection(alias);
+        }
+
+        public static void CloseAll()
+        {
+            GetInstance().CloseAllConnections();
         }
     }
 
