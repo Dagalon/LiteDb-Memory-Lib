@@ -1,52 +1,90 @@
 # LiteDb-Memory-Lib
 
-LiteDb-Memory-Lib provides a lightweight façade over [LiteDB](https://www.litedb.org/) that focuses on managing fully in-memory
-LiteDB instances for tests, prototypes and short lived workloads. The library offers a central `ConnectionManager` that keeps track
-of named databases, helpers to populate collections from objects or JSON files, and convenience methods around LiteDB file
-storage and querying.
+A collection of helper libraries that make it simple to spin up disposable, in-memory database engines for local development, automated tests, and prototypes. The repository currently contains two .NET 9 class libraries:
 
-## Features
+- **LiteDb-Memory-Lib** – a façade over [LiteDB](https://www.litedb.org/) that keeps track of in-memory databases and exposes utility helpers for seeding data, executing ad-hoc queries, and working with LiteDB file storage.
+- **SqliteDB-Memory-Lib** – a lightweight wrapper around the in-memory mode of Microsoft.Data.Sqlite with helpers to seed tables, execute SQL scripts, and map query results into strongly-typed objects.
 
-- **Alias based database registry** – create multiple isolated in-memory databases and retrieve them on demand.
-- **Optional persistence** – export the contents of an in-memory database to disk when closing a connection.
-- **Collection helpers** – populate collections from in-memory objects or JSON files with a single call.
-- **File storage utilities** – upload, query and retrieve LiteDB file storage entries.
-- **Query helpers** – use strongly typed expressions or raw LiteDB constructs without repeating boilerplate.
-- **Robust JSON tooling** – `Tools.ReadJson` now validates input paths and a new `Tools.TryReadJson` helper avoids exceptions when
-  loading optional resources.
+Both libraries follow the same philosophy: offer an ergonomic API to create named in-memory databases, provide convenient seeding helpers, and make it trivial to clean up or persist data after a test run.
+
+## Table of contents
+
+- [Why use these libraries?](#why-use-these-libraries)
+- [Project structure](#project-structure)
+- [Requirements](#requirements)
+- [Getting started](#getting-started)
+  - [Build the solution](#build-the-solution)
+  - [Reference the projects](#reference-the-projects)
+- [LiteDb-Memory-Lib quickstart](#litedb-memory-lib-quickstart)
+  - [Create and seed an in-memory database](#create-and-seed-an-in-memory-database)
+  - [Load seed data from JSON](#load-seed-data-from-json)
+  - [Work with LiteDB file storage](#work-with-litedb-file-storage)
+  - [Run ad-hoc queries](#run-ad-hoc-queries)
+  - [Persist a database to disk](#persist-a-database-to-disk)
+- [SqliteDB-Memory-Lib quickstart](#sqlitedb-memory-lib-quickstart)
+- [Testing](#testing)
+- [License](#license)
+
+## Why use these libraries?
+
+Creating an in-memory database for a single test is straightforward, but making it repeatable, discoverable, and safe across an entire test suite is not. These libraries encapsulate the boilerplate so you can:
+
+- Keep an inventory of named databases and share them across fixtures.
+- Seed data from CLR objects or JSON payloads without manual mapping.
+- Execute scripts or queries and deserialize the results into typed models.
+- Persist databases to disk when you need to inspect state after a test.
+- Integrate quickly with existing LiteDB or SQLite-based projects.
+
+## Project structure
+
+```
+LiteDb-Memory-Lib/
+├── LiteDb-Memory-Lib/           # LiteDB helpers and connection manager
+├── LiteDb-Memory-Tests/         # Tests targeting LiteDb-Memory-Lib
+├── SqliteDB-Memory-Lib/         # SQLite in-memory utilities
+├── SqliteDb-Memory-Tests/       # Tests targeting SqliteDB-Memory-Lib
+└── README.md
+```
+
+## Requirements
+
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download)
+- [LiteDB](https://www.nuget.org/packages/LiteDB) (transitive dependency of LiteDb-Memory-Lib)
+- [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json) (used for JSON seeding helpers)
+- [Microsoft.Data.Sqlite](https://www.nuget.org/packages/Microsoft.Data.Sqlite) (used by SqliteDB-Memory-Lib)
 
 ## Getting started
 
-### Prerequisites
+### Build the solution
 
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download)
-- [LiteDB](https://www.nuget.org/packages/LiteDB) (referenced by the project)
-- [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json) (referenced by the project)
-
-### Building the library
-
-Clone the repository and build the solution from the repository root:
+Clone the repository and run a build from the root directory:
 
 ```bash
 dotnet build
 ```
 
-### Referencing the project
+### Reference the projects
 
-Until the package is published to NuGet you can reference the project directly from another solution:
+Until packages are published to NuGet you can reference the projects directly from a consumer solution:
 
 ```bash
+# LiteDB helper library
 dotnet add <your-project> reference ../LiteDb-Memory-Lib/LiteDb-Memory-Lib/LiteDb-Memory-Lib.csproj
+
+# SQLite helper library
+dotnet add <your-project> reference ../LiteDb-Memory-Lib/SqliteDB-Memory-Lib/SqliteDB-Memory-Lib.csproj
 ```
 
-## Usage examples
+## LiteDb-Memory-Lib quickstart
 
-### Creating and using an in-memory database
+### Create and seed an in-memory database
 
 ```csharp
 using LiteDb_Memory_Lib;
+using System.Collections.Generic;
 
 var manager = ConnectionManager.Instance();
+
 manager.CreateDatabase("people-db");
 
 var status = manager.CreateCollection("people-db", "people", new List<Person>
@@ -62,7 +100,7 @@ if (status == EnumsLiteDbMemory.Output.SUCCESS)
 }
 ```
 
-### Loading seed data from JSON
+### Load seed data from JSON
 
 ```csharp
 var seeded = manager.CreateCollection<Person>(
@@ -72,19 +110,9 @@ var seeded = manager.CreateCollection<Person>(
     useInsertBulk: true);
 ```
 
-`Tools.ReadJson` throws informative exceptions for missing files or invalid content, while `Tools.TryReadJson` allows callers to
-check whether the JSON could be parsed without using exceptions for control flow.
+`Tools.ReadJson` throws descriptive exceptions when the file is missing or malformed, while `Tools.TryReadJson` returns a boolean so optional resources can be loaded without relying on exceptions for control flow.
 
-### Persisting an in-memory database
-
-```csharp
-var result = manager.Close("people-db", pathToKeep: "./backups/people.db");
-```
-
-When `pathToKeep` is provided the database is flushed to disk before the in-memory resources are disposed, enabling a quick way to
-persist state created during a test run.
-
-### Working with LiteDB file storage
+### Work with LiteDB file storage
 
 ```csharp
 var uploadResult = FileStorageTools.Upload(
@@ -97,17 +125,65 @@ var uploadResult = FileStorageTools.Upload(
 var fileInfo = FileStorageTools.Find(manager, "people-db", "avatars", "ada.png");
 ```
 
-### Executing ad-hoc queries
-
-The `GeneralTools.Execute` helper executes raw LiteDB commands and maps the results back into strongly typed objects:
+### Run ad-hoc queries
 
 ```csharp
-var queryResults = GeneralTools.Execute<Person>(manager, "people-db", "SELECT * FROM people WHERE Name = 'Ada'");
+var queryResults = GeneralTools.Execute<Person>(
+    manager,
+    "people-db",
+    "SELECT * FROM people WHERE Name = 'Ada'"
+);
 ```
+
+### Persist a database to disk
+
+```csharp
+var result = manager.Close("people-db", pathToKeep: "./backups/people.db");
+```
+
+When `pathToKeep` is provided, the in-memory database is flushed to disk before the resources are disposed. This is helpful when you want to inspect data produced during a test run.
+
+## SqliteDB-Memory-Lib quickstart
+
+The SQLite-focused library mirrors the ergonomics of the LiteDB variant. A small example:
+
+```csharp
+using SqliteDB_Memory_Lib;
+using System.Collections.Generic;
+
+var manager = ConnectionManager.GetInstance();
+
+// Obtain a shared in-memory connection identified by alias
+var connection = manager.GetConnection("orders-db");
+
+// Create a table and seed rows using the helper utilities
+SqLiteLiteTools.CreateTable(
+    connection,
+    idDataBase: "main",
+    idTable: "Orders",
+    headers: new List<string> { "Id", "Customer", "Total" },
+    values: new object[,]
+    {
+        { 1, "Ada", 120.5m },
+        { 2, "Grace", 95.0m }
+    });
+
+// Read data back as a list of dictionaries
+var orders = SqLiteLiteTools.Select(connection, "SELECT * FROM Orders");
+```
+
+The library exposes helpers to:
+
+- Create or reuse in-memory SQLite connections by alias.
+- Attach or create databases from disk paths.
+- Build tables from CSV files, raw values, or object arrays.
+- Map result sets into dictionaries or strongly-typed models via `QueryExecutor`.
+
+Refer to the [SqliteDB-Memory-Lib](./SqliteDB-Memory-Lib) project for additional samples and extension points.
 
 ## Testing
 
-Unit tests are located under the `LiteDb-Memory-Tests` and `SqliteDb-Memory-Tests` projects. Execute the full test suite with:
+Both libraries ship with dedicated test projects. Run the entire suite from the repository root:
 
 ```bash
 dotnet test
