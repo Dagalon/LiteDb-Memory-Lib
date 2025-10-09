@@ -11,7 +11,7 @@ public static class FileStorageTools
             return EnumsLiteDbMemory.Output.PATH_NOT_FOUND;
         }
         
-        var db = manager.GetDatabase(alias);
+        var db = manager.GetDatabase(alias, createIfMissing: false);
         if (db is null)
         {
             return EnumsLiteDbMemory.Output.DB_NOT_FOUND;
@@ -29,7 +29,7 @@ public static class FileStorageTools
 
     public static EnumsLiteDbMemory.Output Upload(ConnectionManager manager, string alias, string id, string fileName, MemoryStream? stream)
     {
-        var db = manager.GetDatabase(alias);
+        var db = manager.GetDatabase(alias, createIfMissing: false);
         if (db is null)
         {
             return EnumsLiteDbMemory.Output.DB_NOT_FOUND;
@@ -61,7 +61,7 @@ public static class FileStorageTools
 
     public static LiteFileInfo<string>? Find(ConnectionManager manager, string alias, string id, string fileName)
     {
-        var db = manager.GetDatabase(alias);
+        var db = manager.GetDatabase(alias, createIfMissing: false);
 
         if (db is null)
         {

@@ -1,68 +1,118 @@
 # LiteDb-Memory-Lib
 
-## Overview
-
-LiteDb-Memory-Lib is an experimental extension for LiteDB that enables fully in-memory document database usage combined with the ability to leverage SQLite as an internal backend. This hybrid design allows developers to choose between the lightweight NoSQL mode of LiteDB or the robust, ACID-compliant relational capabilities of SQLite seamlessly within .NET applications.
+LiteDb-Memory-Lib provides a lightweight façade over [LiteDB](https://www.litedb.org/) that focuses on managing fully in-memory
+LiteDB instances for tests, prototypes and short lived workloads. The library offers a central `ConnectionManager` that keeps track
+of named databases, helpers to populate collections from objects or JSON files, and convenience methods around LiteDB file
+storage and querying.
 
 ## Features
 
-- NoSQL document database compatible with LiteDB
-- Pure in-memory operation for ultra-fast, transient data handling
-- **Full integration with SQLite as a backend** allowing relational storage, SQL querying, and durability
-- Flexible mode switching between LiteDB document store and SQLite engine
-- API inspired by MongoDB and LiteDB with added power of SQL when using SQLite
-- Ideal for unit testing, prototyping, and smooth data migration between NoSQL and SQL worlds
-- Supports collections, indexes, LINQ queries, and SQLite SQL syntax in hybrid modes
-- Lightweight and embeddable for .NET projects
+- **Alias based database registry** – create multiple isolated in-memory databases and retrieve them on demand.
+- **Optional persistence** – export the contents of an in-memory database to disk when closing a connection.
+- **Collection helpers** – populate collections from in-memory objects or JSON files with a single call.
+- **File storage utilities** – upload, query and retrieve LiteDB file storage entries.
+- **Query helpers** – use strongly typed expressions or raw LiteDB constructs without repeating boilerplate.
+- **Robust JSON tooling** – `Tools.ReadJson` now validates input paths and a new `Tools.TryReadJson` helper avoids exceptions when
+  loading optional resources.
 
-## Installation
+## Getting started
 
-dotnet add package LiteDb-Memory-Lib
+### Prerequisites
 
-text
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download)
+- [LiteDB](https://www.nuget.org/packages/LiteDB) (referenced by the project)
+- [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json) (referenced by the project)
 
-Or reference the compiled DLL in your project manually.
+### Building the library
 
-## Basic Usage
+Clone the repository and build the solution from the repository root:
 
-using LiteDbMemoryLib;
+```bash
+dotnet build
+```
 
-var db = new LiteDbMemoryDatabase();
-var col = db.GetCollection<MyClass>("entities");
-col.Insert(new MyClass { Name = "Test" });
-var results = col.FindAll().ToList();
+### Referencing the project
 
-text
+Until the package is published to NuGet you can reference the project directly from another solution:
 
-### Using SQLite Backend (Recommended for durability and SQL features)
+```bash
+dotnet add <your-project> reference ../LiteDb-Memory-Lib/LiteDb-Memory-Lib/LiteDb-Memory-Lib.csproj
+```
 
-// Initialize database with SQLite backend for persistent and relational data
-var db = new LiteDbMemoryDatabase("Filename=:memory:; Mode=SQLite;");
+## Usage examples
 
-// Use SQL queries alongside NoSQL style document operations
-db.Execute("CREATE TABLE Sample (Id INTEGER PRIMARY KEY, Name TEXT);");
-db.Execute("INSERT INTO Sample (Name) VALUES ('Example');");
-var data = db.Query<Sample>("SELECT * FROM Sample WHERE Name = @name", new { name = "Example" });
+### Creating and using an in-memory database
 
-text
+```csharp
+using LiteDb_Memory_Lib;
 
-## When to Use SQLite Backend
+var manager = ConnectionManager.Instance();
+manager.CreateDatabase("people-db");
 
-- When ACID-compliant transactional consistency is required  
-- For applications needing SQL query power alongside document storage  
-- To enable seamless migration or interoperability with existing SQLite databases  
-- When data durability and recovery are crucial beyond the lifetime of the process  
+var status = manager.CreateCollection("people-db", "people", new List<Person>
+{
+    new() { Id = 1, Name = "Ada" },
+    new() { Id = 2, Name = "Grace" }
+});
 
-## Limitations
+if (status == EnumsLiteDbMemory.Output.SUCCESS)
+{
+    var collection = manager.GetCollection<Person>("people-db", "people");
+    var people = collection?.FindAll().ToList();
+}
+```
 
-- In-memory mode loses data after the process ends  
-- Some advanced LiteDB-exclusive features might not fully carry over to SQLite mode  
-- The hybrid approach may have slight performance trade-offs depending on usage patterns  
+### Loading seed data from JSON
 
-## Credits
+```csharp
+var seeded = manager.CreateCollection<Person>(
+    alias: "people-db",
+    collection: "people",
+    path: "./data/people.json",
+    useInsertBulk: true);
+```
 
-Built upon LiteDB and SQLite, with contributions from the open-source community.
+`Tools.ReadJson` throws informative exceptions for missing files or invalid content, while `Tools.TryReadJson` allows callers to
+check whether the JSON could be parsed without using exceptions for control flow.
+
+### Persisting an in-memory database
+
+```csharp
+var result = manager.Close("people-db", pathToKeep: "./backups/people.db");
+```
+
+When `pathToKeep` is provided the database is flushed to disk before the in-memory resources are disposed, enabling a quick way to
+persist state created during a test run.
+
+### Working with LiteDB file storage
+
+```csharp
+var uploadResult = FileStorageTools.Upload(
+    manager,
+    alias: "people-db",
+    id: "avatars",
+    fileName: "ada.png",
+    pathFile: "./assets/ada.png");
+
+var fileInfo = FileStorageTools.Find(manager, "people-db", "avatars", "ada.png");
+```
+
+### Executing ad-hoc queries
+
+The `GeneralTools.Execute` helper executes raw LiteDB commands and maps the results back into strongly typed objects:
+
+```csharp
+var queryResults = GeneralTools.Execute<Person>(manager, "people-db", "SELECT * FROM people WHERE Name = 'Ada'");
+```
+
+## Testing
+
+Unit tests are located under the `LiteDb-Memory-Tests` and `SqliteDb-Memory-Tests` projects. Execute the full test suite with:
+
+```bash
+dotnet test
+```
 
 ## License
 
-MIT license (see LICENSE file).
+This project is licensed under the [MIT License](./LICENSE).

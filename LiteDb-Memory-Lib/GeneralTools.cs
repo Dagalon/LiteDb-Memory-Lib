@@ -99,7 +99,7 @@ public static class GeneralTools
 
     public static List<T>? Execute<T>(ConnectionManager manager, string alias,  string qry)
     {
-        var results = manager.GetDatabase(alias)?.Execute(qry);
+        var results = manager.GetDatabase(alias, createIfMissing: false)?.Execute(qry);
         return results != null ? BsonDataReaderToObject<T>(results) : null;
     }
     
