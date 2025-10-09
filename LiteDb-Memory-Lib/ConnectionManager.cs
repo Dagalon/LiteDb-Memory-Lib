@@ -1,4 +1,5 @@
 using LiteDB;
+using System.Threading;
 
 namespace LiteDb_Memory_Lib;
 
@@ -9,9 +10,10 @@ public sealed class ConnectionManager
 {
     #region Attributes
 
-    private static ConnectionManager? _instance;
+    private static readonly Lazy<ConnectionManager> LazyInstance =
+        new(() => new ConnectionManager(), LazyThreadSafetyMode.ExecutionAndPublication);
 
-    private static readonly object SyncRoot = new();
+    private readonly object _syncRoot = new();
 
     private readonly Dictionary<string, LiteDatabase> _databases;
 
@@ -41,7 +43,7 @@ public sealed class ConnectionManager
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
 
-        lock (SyncRoot)
+        lock (_syncRoot)
         {
             if (_databases.TryGetValue(alias, out var database))
             {
@@ -69,7 +71,7 @@ public sealed class ConnectionManager
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
 
-        lock (SyncRoot)
+        lock (_syncRoot)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -123,7 +125,7 @@ public sealed class ConnectionManager
         LiteDatabase? database;
         MemoryStream? memoryStream = null;
 
-        lock (SyncRoot)
+        lock (_syncRoot)
         {
             if (!_databases.TryGetValue(alias, out database))
             {
@@ -240,7 +242,7 @@ public sealed class ConnectionManager
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
         ArgumentException.ThrowIfNullOrWhiteSpace(collection);
 
-        lock (SyncRoot)
+        lock (_syncRoot)
         {
             return _databases.TryGetValue(alias, out var db) ? db.GetCollection<T>(collection) : null;
         }
@@ -250,7 +252,7 @@ public sealed class ConnectionManager
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
 
-        lock (SyncRoot)
+        lock (_syncRoot)
         {
             return _databases.TryGetValue(alias, out var db)
                 ? db.GetCollectionNames().ToList()
@@ -260,7 +262,7 @@ public sealed class ConnectionManager
 
     public static ConnectionManager Instance()
     {
-        return _instance ??= new ConnectionManager();
+        return LazyInstance.Value;
     }
 
     private LiteDatabase CreateInMemoryDatabaseLocked(string alias, bool replaceExisting)

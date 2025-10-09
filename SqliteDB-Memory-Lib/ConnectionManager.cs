@@ -1,15 +1,14 @@
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
 using System.Data;
-
 
 namespace SqliteDB_Memory_Lib
 {
     public sealed class ConnectionManager
     {
-        private static readonly object _syncRoot = new();
-        private static ConnectionManager? _instance;
+        private static readonly Lazy<ConnectionManager> LazyInstance =
+            new(() => new ConnectionManager(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+        private readonly object _syncRoot = new();
         private readonly Dictionary<string, SqliteConnection> _connections = new(StringComparer.OrdinalIgnoreCase);
 
         private ConnectionManager()
@@ -18,7 +17,7 @@ namespace SqliteDB_Memory_Lib
 
         public static ConnectionManager GetInstance()
         {
-            return _instance ??= new ConnectionManager();
+            return LazyInstance.Value;
         }
 
         public SqliteConnection GetConnection(string? alias = null, string? path = null)
