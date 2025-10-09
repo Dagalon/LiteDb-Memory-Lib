@@ -1,4 +1,4 @@
-namespace MemoryDb_Lib;
+namespace LiteDb_Memory_Lib;
 
 public static class EnumsLiteDbMemory
 {

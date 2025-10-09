@@ -1,6 +1,6 @@
-# MemoryDb-Lib
+# LiteDb-Memory-Lib
 
-MemoryDb-Lib provides a lightweight façade over [LiteDB](https://www.litedb.org/) that focuses on managing fully in-memory
+LiteDb-Memory-Lib provides a lightweight façade over [LiteDB](https://www.litedb.org/) that focuses on managing fully in-memory
 LiteDB instances for tests, prototypes and short lived workloads. The library offers a central `ConnectionManager` that keeps track
 of named databases, helpers to populate collections from objects or JSON files, and convenience methods around LiteDB file
 storage and querying.
@@ -36,7 +36,7 @@ dotnet build
 Until the package is published to NuGet you can reference the project directly from another solution:
 
 ```bash
-dotnet add <your-project> reference ../MemoryDb-Lib/MemoryDb-Lib/MemoryDb-Lib.csproj
+dotnet add <your-project> reference ../LiteDb-Memory-Lib/LiteDb-Memory-Lib/LiteDb-Memory-Lib.csproj
 ```
 
 ## Usage examples
@@ -44,7 +44,7 @@ dotnet add <your-project> reference ../MemoryDb-Lib/MemoryDb-Lib/MemoryDb-Lib.cs
 ### Creating and using an in-memory database
 
 ```csharp
-using MemoryDb_Lib;
+using LiteDb_Memory_Lib;
 
 var manager = ConnectionManager.Instance();
 manager.CreateDatabase("people-db");

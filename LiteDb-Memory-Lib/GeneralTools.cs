@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using LiteDB;
 
-namespace MemoryDb_Lib;
+namespace LiteDb_Memory_Lib;
 
 public static class GeneralTools
 {

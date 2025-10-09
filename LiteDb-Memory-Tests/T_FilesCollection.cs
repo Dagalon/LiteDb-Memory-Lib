@@ -1,5 +1,5 @@
 ﻿using LiteDB;
-using MemoryDb_Lib;
+using LiteDb_Memory_Lib;
 
 namespace LiteDb_Memory_Tests
 {
@@ -15,7 +15,7 @@ namespace LiteDb_Memory_Tests
         public void T_Upload_File()
         {
             // Instance manager connections
-            const string rootPath = "C:\\GitRepositories\\c#\\MemoryDb-Lib\\LiteDb-Memory-Tests\\Data";
+            const string rootPath = "C:\\GitRepositories\\c#\\LiteDb-Memory-Lib\\LiteDb-Memory-Tests\\Data";
             const string aliasDb = "Test-db-Images";
             const string collection = "Images";
             const string fileName = "file-test";
