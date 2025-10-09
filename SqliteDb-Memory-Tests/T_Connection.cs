@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using NUnit.Framework;
 using SqliteDB_Memory_Lib;
 
 namespace SqliteDb_Memory_Tests;
