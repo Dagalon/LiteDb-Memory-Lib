@@ -1,4 +1,4 @@
-# LiteDb-Memory-Lib
+# MemoryDb-Lib
 
 A collection of helper libraries that make it simple to spin up disposable, in-memory database engines for local development, automated tests, and prototypes. The repository currently contains two .NET 9 class libraries:
 
