@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using LiteDB;
 
-namespace LiteDb_Memory_Lib;
+namespace MemoryDb_Lib;
 
 public static class FilterTools
 { 

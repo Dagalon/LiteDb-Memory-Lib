@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace LiteDb_Memory_Lib;
+namespace MemoryDb_Lib;
 
 /// <summary>
 /// Helper methods shared across the library.

@@ -1,6 +1,6 @@
 using LiteDB;
 
-namespace LiteDb_Memory_Lib;
+namespace MemoryDb_Lib;
 
 /// <summary>
 /// Centralised manager responsible for orchestrating LiteDB in-memory connections.

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDb-Memory-Lib", "../LiteDb-Memory-Lib/LiteDb-Memory-Lib.csproj", "{303C9297-37FF-4EA1-8EF9-7379081F520C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDb-Lib", "../MemoryDb-Lib/MemoryDb-Lib.csproj", "{303C9297-37FF-4EA1-8EF9-7379081F520C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDb-Memory-Tests", "../LiteDb-Memory-Tests\LiteDb-Memory-Tests.csproj", "{8F2E088B-4389-4FBA-B32F-1437C771B3E0}"
 EndProject

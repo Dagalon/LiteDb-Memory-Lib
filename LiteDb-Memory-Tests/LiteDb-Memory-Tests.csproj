@@ -26,7 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LiteDb-Memory-Lib\LiteDb-Memory-Lib.csproj" />
+      <ProjectReference Include="..\MemoryDb-Lib\MemoryDb-Lib.csproj" />
     </ItemGroup>
 
     <ItemGroup>

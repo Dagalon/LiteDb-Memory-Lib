@@ -1,4 +1,4 @@
-using LiteDb_Memory_Lib;
+using MemoryDb_Lib;
 using LiteDB;
 
 namespace LiteDb_Memory_Tests;
@@ -49,7 +49,7 @@ public class Connection
         manager.CreateCollection(aliasDb, "personal_data",[customer]);
        
         // Write to disk
-        var folderPath = "C:\\GitRepositories\\Net\\C#\\LiteDb-Memory-Lib-develop\\LiteDb-Memory-Tests\\Data";
+        var folderPath = "C:\\GitRepositories\\Net\\C#\\MemoryDb-Lib-develop\\LiteDb-Memory-Tests\\Data";
         var pathToKeep = Path.Combine(folderPath, "Test_Db_Shared.bin");
         manager.Close(aliasDb, pathToKeep);
         

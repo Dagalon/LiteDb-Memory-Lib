@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using LiteDb_Memory_Lib;
+using MemoryDb_Lib;
 using LiteDB;
 
 namespace LiteDb_Memory_Tests;
