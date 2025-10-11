@@ -5,14 +5,14 @@ namespace LiteDb_Memory_Lib;
 public static class FileStorageTools
 {
     /// <summary>
-    /// Carga un archivo desde disco al almacenamiento de ficheros de LiteDB para el alias indicado.
+    /// Uploads a file from disk into the LiteDB file storage for the provided alias.
     /// </summary>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="id">Identificador del contenedor de almacenamiento.</param>
-    /// <param name="fileName">Nombre que tendrá el archivo en el almacenamiento.</param>
-    /// <param name="pathFile">Ruta del archivo en disco.</param>
-    /// <returns>Un valor que indica si la carga se realizó correctamente.</returns>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="id">Identifier of the storage container.</param>
+    /// <param name="fileName">Name that the file will have in storage.</param>
+    /// <param name="pathFile">Path to the file on disk.</param>
+    /// <returns>A value that reports whether the upload succeeded.</returns>
     public static EnumsLiteDbMemory.Output Upload(ConnectionManager manager, string alias, string id, string fileName, string pathFile)
     {
         if (!File.Exists(pathFile))
@@ -37,14 +37,14 @@ public static class FileStorageTools
     }
 
     /// <summary>
-    /// Carga un archivo representado por un flujo de memoria en el almacenamiento de LiteDB.
+    /// Uploads a file represented by a memory stream into the LiteDB storage.
     /// </summary>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="id">Identificador del contenedor de almacenamiento.</param>
-    /// <param name="fileName">Nombre que tendrá el archivo en el almacenamiento.</param>
-    /// <param name="stream">Flujo opcional con el contenido del archivo.</param>
-    /// <returns>Un valor que indica si la carga se realizó correctamente.</returns>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="id">Identifier of the storage container.</param>
+    /// <param name="fileName">Name that the file will have in storage.</param>
+    /// <param name="stream">Optional stream with the file contents.</param>
+    /// <returns>A value that reports whether the upload succeeded.</returns>
     public static EnumsLiteDbMemory.Output Upload(ConnectionManager manager, string alias, string id, string fileName, MemoryStream? stream)
     {
         var db = manager.GetDatabase(alias, createIfMissing: false);
@@ -77,14 +77,14 @@ public static class FileStorageTools
     }
 
     /// <summary>
-    /// Obtiene la referencia de un archivo almacenado mediante su identificador.
+    /// Retrieves the reference of a stored file by using its identifier.
     /// </summary>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="id">Identificador del contenedor de almacenamiento.</param>
-    /// <param name="fileName">Identificador del archivo almacenado.</param>
-    /// <returns>La información del archivo o <c>null</c> si no existe.</returns>
-    /// <exception cref="Exception">Se lanza cuando el alias de base de datos no está registrado.</exception>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="id">Identifier of the storage container.</param>
+    /// <param name="fileName">Identifier of the stored file.</param>
+    /// <returns>The file information or <c>null</c> when it does not exist.</returns>
+    /// <exception cref="Exception">Thrown when the database alias is not registered.</exception>
     public static LiteFileInfo<string>? Find(ConnectionManager manager, string alias, string id, string fileName)
     {
         var db = manager.GetDatabase(alias, createIfMissing: false);
@@ -102,10 +102,10 @@ public static class FileStorageTools
     }
 
     /// <summary>
-    /// Construye el alias interno utilizado para almacenar los fragmentos del archivo.
+    /// Builds the internal alias used to store the file chunks.
     /// </summary>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <returns>El alias generado para los fragmentos.</returns>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <returns>The generated alias for the chunks.</returns>
     private static string GetAliasFiles(string alias)
     {
         return $"{alias}chunk";

@@ -4,18 +4,18 @@ using Newtonsoft.Json;
 namespace LiteDb_Memory_Lib;
 
 /// <summary>
-/// Métodos auxiliares compartidos en toda la biblioteca.
+/// Helper methods shared across the entire library.
 /// </summary>
 public static class Tools
 {
     /// <summary>
-    /// Lee un archivo JSON desde disco y lo deserializa al tipo solicitado.
+    /// Reads a JSON file from disk and deserializes it into the requested type.
     /// </summary>
-    /// <typeparam name="T">Tipo al que se mapeará el archivo JSON.</typeparam>
-    /// <param name="jsonPath">Ruta absoluta o relativa del archivo JSON.</param>
-    /// <exception cref="ArgumentException">Se lanza cuando <paramref name="jsonPath"/> es nulo o solo contiene espacios.</exception>
-    /// <exception cref="FileNotFoundException">Se lanza cuando el archivo no existe en disco.</exception>
-    /// <exception cref="JsonException">Se lanza cuando el contenido JSON no puede deserializarse.</exception>
+    /// <typeparam name="T">Type that will receive the mapped JSON content.</typeparam>
+    /// <param name="jsonPath">Absolute or relative path to the JSON file.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="jsonPath"/> is null or whitespace.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the file is missing on disk.</exception>
+    /// <exception cref="JsonException">Thrown when the JSON content cannot be deserialized.</exception>
     public static T? ReadJson<T>(string jsonPath)
     {
         if (string.IsNullOrWhiteSpace(jsonPath))
@@ -40,12 +40,12 @@ public static class Tools
     }
 
     /// <summary>
-    /// Intenta leer un archivo JSON desde disco y deserializarlo al tipo solicitado.
+    /// Attempts to read a JSON file from disk and deserialize it into the requested type.
     /// </summary>
-    /// <typeparam name="T">Tipo al que se mapeará el archivo JSON.</typeparam>
-    /// <param name="jsonPath">Ruta absoluta o relativa del archivo JSON.</param>
-    /// <param name="result">Resultado deserializado cuando la operación tiene éxito.</param>
-    /// <returns><c>true</c> si el archivo se procesa correctamente; en caso contrario, <c>false</c>.</returns>
+    /// <typeparam name="T">Type that will receive the mapped JSON content.</typeparam>
+    /// <param name="jsonPath">Absolute or relative path to the JSON file.</param>
+    /// <param name="result">Deserialized result when the operation succeeds.</param>
+    /// <returns><c>true</c> when the file is processed successfully; otherwise, <c>false</c>.</returns>
     public static bool TryReadJson<T>(string jsonPath, [MaybeNullWhen(false)] out T result)
     {
         try

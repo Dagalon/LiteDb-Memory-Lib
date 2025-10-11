@@ -6,14 +6,14 @@ namespace LiteDb_Memory_Lib;
 public static class FilterTools
 {
     /// <summary>
-    /// Recupera el primer documento que cumple con el predicado indicado.
+    /// Retrieves the first document that satisfies the provided predicate.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="predicate">Predicado utilizado para filtrar los documentos.</param>
-    /// <returns>El primer documento encontrado o <c>null</c> si no existe coincidencia.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="predicate">Predicate used to filter documents.</param>
+    /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T>(ConnectionManager manager, string alias, string collectionName, Expression<Func<T, bool>> predicate)
     {
          var collection = manager.GetCollection<T>(alias, collectionName);
@@ -21,16 +21,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera el primer documento que cumple con el predicado incluyendo los datos referenciados.
+    /// Retrieves the first document that satisfies the predicate including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="predicate">Predicado utilizado para filtrar los documentos.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>El primer documento encontrado o <c>null</c> si no existe coincidencia.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="predicate">Predicate used to filter documents.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T, TOutput>(ConnectionManager manager, string alias, string collectionName, Expression<Func<T, bool>> predicate,
         Expression<Func<T, TOutput>> refFunctional)
     {
@@ -39,14 +39,14 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera el primer documento que cumple con la expresión de LiteDB indicada.
+    /// Retrieves the first document that satisfies the supplied LiteDB expression.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="qry">Expresión de LiteDB que define el filtro.</param>
-    /// <returns>El primer documento encontrado o <c>null</c> si no existe coincidencia.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="qry">LiteDB expression that defines the filter.</param>
+    /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T>(ConnectionManager manager, string alias, string collectionName, BsonExpression qry)
     {
         var collection = manager.GetCollection<T>(alias, collectionName);
@@ -54,16 +54,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera el primer documento que cumple con la expresión de LiteDB incluyendo datos referenciados.
+    /// Retrieves the first document that satisfies the LiteDB expression including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="qry">Expresión de LiteDB que define el filtro.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>El primer documento encontrado o <c>null</c> si no existe coincidencia.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="qry">LiteDB expression that defines the filter.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T, TOutput>(ConnectionManager manager, string alias, string collectionName, BsonExpression qry,
         Expression<Func<T, TOutput>> refFunctional)
     {
@@ -72,14 +72,14 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera el primer documento que cumple con la consulta indicada.
+    /// Retrieves the first document that satisfies the provided query.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="qry">Consulta de LiteDB utilizada para filtrar los documentos.</param>
-    /// <returns>El primer documento encontrado o <c>null</c> si no existe coincidencia.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="qry">LiteDB query used to filter documents.</param>
+    /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T>(ConnectionManager manager, string alias, string collectionName, Query qry)
     {
         var collection = manager.GetCollection<T>(alias, collectionName);
@@ -87,16 +87,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera el primer documento que cumple con la consulta incluyendo datos referenciados.
+    /// Retrieves the first document that satisfies the query including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="qry">Consulta de LiteDB utilizada para filtrar los documentos.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>El primer documento encontrado o <c>null</c> si no existe coincidencia.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="qry">LiteDB query used to filter documents.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T, TOutput>(ConnectionManager manager, string alias, string collectionName, Query qry,
         Expression<Func<T, TOutput>> refFunctional)
     {
@@ -105,16 +105,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera todos los documentos que cumplen con el predicado incluyendo datos referenciados.
+    /// Retrieves all documents that satisfy the predicate including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="predicate">Predicado utilizado para filtrar los documentos.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>Una lista con los documentos coincidentes o <c>null</c> si no existe la colección.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="predicate">Predicate used to filter documents.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>A list with the matching documents or <c>null</c> when the collection does not exist.</returns>
     public static List<T>? Find<T, TOutput>(ConnectionManager manager, string alias, string collectionName,
         Expression<Func<T, bool>> predicate, Expression<Func<T, TOutput>> refFunctional)
     {
@@ -123,14 +123,14 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera todos los documentos que cumplen con el predicado indicado.
+    /// Retrieves all documents that satisfy the provided predicate.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="predicate">Predicado utilizado para filtrar los documentos.</param>
-    /// <returns>Una lista con los documentos coincidentes o <c>null</c> si no existe la colección.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="predicate">Predicate used to filter documents.</param>
+    /// <returns>A list with the matching documents or <c>null</c> when the collection does not exist.</returns>
     public static List<T>? Find<T>(ConnectionManager manager, string alias, string collectionName, Expression<Func<T, bool>> predicate)
     {
         var collection = manager.GetCollection<T>(alias, collectionName);
@@ -138,16 +138,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera todos los documentos que cumplen con la consulta indicada incluyendo datos referenciados.
+    /// Retrieves all documents that satisfy the provided query including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="qry">Consulta de LiteDB utilizada para filtrar los documentos.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>Una lista con los documentos coincidentes o <c>null</c> si no existe la colección.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="qry">LiteDB query used to filter documents.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>A list with the matching documents or <c>null</c> when the collection does not exist.</returns>
     public static List<T>? Find<T, TOutput>(ConnectionManager manager, string alias, string collectionName, Query qry,
         Expression<Func<T, TOutput>> refFunctional)
     {
@@ -156,16 +156,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera todos los documentos que cumplen con la expresión indicada incluyendo datos referenciados.
+    /// Retrieves all documents that satisfy the provided expression including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="qry">Expresión de LiteDB utilizada para filtrar los documentos.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>Una lista con los documentos coincidentes o <c>null</c> si no existe la colección.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="qry">LiteDB expression used to filter documents.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>A list with the matching documents or <c>null</c> when the collection does not exist.</returns>
     public static List<T>? Find<T, TOutput>(ConnectionManager manager, string alias, string collectionName, BsonExpression qry,
         Expression<Func<T, TOutput>> refFunctional)
     {
@@ -174,14 +174,14 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera un documento utilizando su identificador.
+    /// Retrieves a document by using its identifier.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="id">Identificador del documento.</param>
-    /// <returns>El documento encontrado o <c>null</c> si no existe.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="id">Identifier of the document.</param>
+    /// <returns>The found document or <c>null</c> when it does not exist.</returns>
     public static T? FindById<T>(ConnectionManager manager, string alias, string collectionName, BsonValue id)
     {
         var collection = manager.GetCollection<T>(alias, collectionName);
@@ -189,16 +189,16 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera un documento mediante su identificador incluyendo los datos referenciados.
+    /// Retrieves a document by its identifier including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <param name="id">Identificador del documento.</param>
-    /// <returns>El documento encontrado o <c>null</c> si no existe.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <param name="id">Identifier of the document.</param>
+    /// <returns>The found document or <c>null</c> when it does not exist.</returns>
     public static T? FindById<T, TOutput>(ConnectionManager manager, string alias, string collectionName,
         Expression<Func<T, TOutput>> refFunctional, BsonValue id)
     {
@@ -207,15 +207,15 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera todos los documentos de la colección incluyendo los datos referenciados.
+    /// Retrieves all documents in the collection including referenced data.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <typeparam name="TOutput">Tipo producido por la expresión de referencia.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <param name="refFunctional">Expresión que describe la relación referenciada a incluir.</param>
-    /// <returns>Una lista con todos los documentos o <c>null</c> si no existe la colección.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <typeparam name="TOutput">Type produced by the referenced expression.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <param name="refFunctional">Expression that describes the referenced relationship to include.</param>
+    /// <returns>A list with all documents or <c>null</c> when the collection does not exist.</returns>
     public static List<T>? FindAll<T, TOutput>(ConnectionManager manager, string alias, string collectionName,
         Expression<Func<T, TOutput>> refFunctional)
     {
@@ -224,13 +224,13 @@ public static class FilterTools
     }
 
     /// <summary>
-    /// Recupera todos los documentos de la colección.
+    /// Retrieves all documents in the collection.
     /// </summary>
-    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
-    /// <param name="manager">Instancia de <see cref="ConnectionManager"/>.</param>
-    /// <param name="alias">Alias de la conexión de base de datos.</param>
-    /// <param name="collectionName">Nombre de la colección objetivo.</param>
-    /// <returns>Una lista con todos los documentos o <c>null</c> si no existe la colección.</returns>
+    /// <typeparam name="T">Type of the documents stored in the collection.</typeparam>
+    /// <param name="manager">Instance of <see cref="ConnectionManager"/>.</param>
+    /// <param name="alias">Alias of the database connection.</param>
+    /// <param name="collectionName">Name of the target collection.</param>
+    /// <returns>A list with all documents or <c>null</c> when the collection does not exist.</returns>
     public static List<T>? FindAll<T>(ConnectionManager manager, string alias, string collectionName)
     {
         var collection = manager.GetCollection<T>(alias, collectionName);
