@@ -4,7 +4,7 @@ using System.Threading;
 namespace LiteDb_Memory_Lib;
 
 /// <summary>
-/// Centralised manager responsible for orchestrating LiteDB in-memory connections.
+/// Administrador centralizado encargado de orquestar las conexiones en memoria de LiteDB.
 /// </summary>
 public sealed class ConnectionManager
 {
@@ -34,11 +34,11 @@ public sealed class ConnectionManager
     #region Methods
 
     /// <summary>
-    /// Retrieves a previously registered database using its alias.
+    /// Obtiene una base de datos registrada previamente utilizando su alias.
     /// </summary>
-    /// <param name="alias">Alias of the database connection.</param>
-    /// <param name="createIfMissing">Indicates whether a new in-memory database should be created when the alias is unknown.</param>
-    /// <returns>An instance of <see cref="LiteDatabase"/> when the alias exists or is created.</returns>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="createIfMissing">Indica si se debe crear una nueva base de datos en memoria cuando el alias no existe.</param>
+    /// <returns>Una instancia de <see cref="LiteDatabase"/> cuando el alias existe o se crea.</returns>
     public LiteDatabase? GetDatabase(string alias, bool createIfMissing = true)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
@@ -60,12 +60,13 @@ public sealed class ConnectionManager
     }
 
     /// <summary>
-    /// Creates or replaces a database using the provided alias.
+    /// Crea una nueva conexión de base de datos o reemplaza la existente usando el alias proporcionado.
     /// </summary>
-    /// <param name="alias">Alias of the database connection.</param>
-    /// <param name="path">Optional path to a LiteDB file. When omitted an in-memory database is created.</param>
-    /// <param name="substituteIfExist">Indicates whether an existing connection should be replaced.</param>
-    /// <param name="isShared">When <c>true</c> the LiteDB file is opened in shared mode.</param>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="path">Ruta opcional a un archivo de LiteDB. Si se omite, se genera una base en memoria.</param>
+    /// <param name="substituteIfExist">Indica si se debe sustituir una conexión ya registrada.</param>
+    /// <param name="isShared">Cuando es <c>true</c> el archivo LiteDB se abre en modo compartido.</param>
+    /// <returns>Un valor que indica si la operación se realizó correctamente.</returns>
     public EnumsLiteDbMemory.Output CreateDatabase(string alias, string? path = null, bool substituteIfExist = false,
         bool isShared = false)
     {
@@ -114,10 +115,11 @@ public sealed class ConnectionManager
     }
 
     /// <summary>
-    /// Closes a registered database and optionally persists the in-memory content to disk.
+    /// Cierra una base de datos existente y, opcionalmente, persiste el contenido en memoria a disco.
     /// </summary>
-    /// <param name="alias">Alias of the database connection.</param>
-    /// <param name="pathToKeep">Optional destination path where the in-memory content should be written.</param>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="pathToKeep">Ruta opcional donde se guardará el contenido en memoria.</param>
+    /// <returns>Un valor que indica si el cierre se realizó correctamente.</returns>
     public EnumsLiteDbMemory.Output Close(string alias, string? pathToKeep = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
@@ -165,6 +167,15 @@ public sealed class ConnectionManager
         }
     }
 
+    /// <summary>
+    /// Crea una nueva colección en la base seleccionada y la inicializa con documentos opcionales.
+    /// </summary>
+    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="collection">Nombre de la colección a crear.</param>
+    /// <param name="documents">Documentos opcionales que se insertarán en la colección.</param>
+    /// <param name="useInsertBulk">Cuando es <c>true</c> los documentos se insertan en bloque para mejorar el rendimiento.</param>
+    /// <returns>Un valor que indica si la colección se creó correctamente.</returns>
     public EnumsLiteDbMemory.Output CreateCollection<T>(string alias, string collection, List<T>? documents = null,
         bool useInsertBulk = false) where T : new()
     {
@@ -199,6 +210,15 @@ public sealed class ConnectionManager
         return EnumsLiteDbMemory.Output.SUCCESS;
     }
 
+    /// <summary>
+    /// Crea una nueva colección y la rellena con los datos de un archivo JSON.
+    /// </summary>
+    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="collection">Nombre de la colección a crear.</param>
+    /// <param name="path">Ruta a un archivo JSON que contiene los documentos a insertar.</param>
+    /// <param name="useInsertBulk">Cuando es <c>true</c> los documentos se insertan en bloque para mejorar el rendimiento.</param>
+    /// <returns>Un valor que indica si la colección se creó correctamente.</returns>
     public EnumsLiteDbMemory.Output CreateCollection<T>(string alias, string collection, string path,
         bool useInsertBulk = false)
     {
@@ -237,6 +257,13 @@ public sealed class ConnectionManager
         return EnumsLiteDbMemory.Output.SUCCESS;
     }
 
+    /// <summary>
+    /// Obtiene una colección tipada desde la base administrada.
+    /// </summary>
+    /// <typeparam name="T">Tipo de los documentos almacenados en la colección.</typeparam>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="collection">Nombre de la colección.</param>
+    /// <returns>La colección solicitada o <c>null</c> si no existe.</returns>
     public ILiteCollection<T>? GetCollection<T>(string alias, string collection)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
@@ -248,6 +275,11 @@ public sealed class ConnectionManager
         }
     }
 
+    /// <summary>
+    /// Obtiene los nombres de todas las colecciones registradas en la base seleccionada.
+    /// </summary>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <returns>Una lista con los nombres disponibles.</returns>
     public List<string> GetCollectionNames(string alias)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
@@ -260,11 +292,21 @@ public sealed class ConnectionManager
         }
     }
 
+    /// <summary>
+    /// Proporciona acceso a la instancia única del administrador de conexiones.
+    /// </summary>
+    /// <returns>La instancia compartida de <see cref="ConnectionManager"/>.</returns>
     public static ConnectionManager Instance()
     {
         return LazyInstance.Value;
     }
 
+    /// <summary>
+    /// Genera una base de datos en memoria dentro de un contexto seguro para hilos.
+    /// </summary>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
+    /// <param name="replaceExisting">Indica si debe reemplazarse una base existente.</param>
+    /// <returns>La instancia de <see cref="LiteDatabase"/> creada.</returns>
     private LiteDatabase CreateInMemoryDatabaseLocked(string alias, bool replaceExisting)
     {
         if (replaceExisting)
@@ -292,6 +334,10 @@ public sealed class ConnectionManager
         }
     }
 
+    /// <summary>
+    /// Libera la conexión de LiteDB y el flujo asociado para el alias indicado.
+    /// </summary>
+    /// <param name="alias">Alias de la conexión de base de datos.</param>
     private void DisposeDatabaseLocked(string alias)
     {
         if (_databases.Remove(alias, out var existingDb))
