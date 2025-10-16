@@ -3,19 +3,11 @@ using Newtonsoft.Json;
 
 namespace LiteDb_Memory_Lib;
 
-/// <summary>
-/// Helper methods shared across the entire library.
-/// </summary>
 public static class Tools
 {
     /// <summary>
     /// Reads a JSON file from disk and deserializes it into the requested type.
     /// </summary>
-    /// <typeparam name="T">Type that will receive the mapped JSON content.</typeparam>
-    /// <param name="jsonPath">Absolute or relative path to the JSON file.</param>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="jsonPath"/> is null or whitespace.</exception>
-    /// <exception cref="FileNotFoundException">Thrown when the file is missing on disk.</exception>
-    /// <exception cref="JsonException">Thrown when the JSON content cannot be deserialized.</exception>
     public static T? ReadJson<T>(string jsonPath)
     {
         if (string.IsNullOrWhiteSpace(jsonPath))
@@ -42,10 +34,6 @@ public static class Tools
     /// <summary>
     /// Attempts to read a JSON file from disk and deserialize it into the requested type.
     /// </summary>
-    /// <typeparam name="T">Type that will receive the mapped JSON content.</typeparam>
-    /// <param name="jsonPath">Absolute or relative path to the JSON file.</param>
-    /// <param name="result">Deserialized result when the operation succeeds.</param>
-    /// <returns><c>true</c> when the file is processed successfully; otherwise, <c>false</c>.</returns>
     public static bool TryReadJson<T>(string jsonPath, [MaybeNullWhen(false)] out T result)
     {
         try
