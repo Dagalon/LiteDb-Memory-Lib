@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDb-Memory-Lib", "../LiteDb-Memory-Lib/LiteDb-Memory-Lib.csproj", "{303C9297-37FF-4EA1-8EF9-7379081F520C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDb-Memory-Tests", "../LiteDb-Memory-Tests\LiteDb-Memory-Tests.csproj", "{8F2E088B-4389-4FBA-B32F-1437C771B3E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteDb-Memory-Lib", "../SqliteDb-Memory-Lib\SqliteDB-Memory-Lib.csproj", "{8E629501-615A-4EAC-A2CF-4E792C99931D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteDb-Memory-Tests", "..\SqliteDb-Memory-Tests\SqliteDb-Memory-Tests.csproj", "{BF51E2F8-572E-40F4-932B-3B88C3706E95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{303C9297-37FF-4EA1-8EF9-7379081F520C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{303C9297-37FF-4EA1-8EF9-7379081F520C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{303C9297-37FF-4EA1-8EF9-7379081F520C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303C9297-37FF-4EA1-8EF9-7379081F520C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F2E088B-4389-4FBA-B32F-1437C771B3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F2E088B-4389-4FBA-B32F-1437C771B3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F2E088B-4389-4FBA-B32F-1437C771B3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F2E088B-4389-4FBA-B32F-1437C771B3E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E629501-615A-4EAC-A2CF-4E792C99931D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E629501-615A-4EAC-A2CF-4E792C99931D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E629501-615A-4EAC-A2CF-4E792C99931D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E629501-615A-4EAC-A2CF-4E792C99931D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF51E2F8-572E-40F4-932B-3B88C3706E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF51E2F8-572E-40F4-932B-3B88C3706E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF51E2F8-572E-40F4-932B-3B88C3706E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF51E2F8-572E-40F4-932B-3B88C3706E95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
