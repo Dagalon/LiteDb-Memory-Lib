@@ -1,7 +1,13 @@
 ﻿namespace SqliteDB_Memory_Lib;
 
+/// <summary>
+/// Shared enumerations that describe SQLite in-memory operation outcomes.
+/// </summary>
 public static class EnumsSqliteMemory
 {
+    /// <summary>
+    /// Result codes returned by SQLite helper operations.
+    /// </summary>
     public enum Output
     {
         SUCCESS=1,

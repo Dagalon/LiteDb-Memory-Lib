@@ -3,6 +3,9 @@ using LiteDB;
 
 namespace LiteDb_Memory_Lib;
 
+/// <summary>
+/// High level helpers to manipulate collections stored inside managed LiteDB databases.
+/// </summary>
 public static class GeneralTools
 {
     /// <summary>

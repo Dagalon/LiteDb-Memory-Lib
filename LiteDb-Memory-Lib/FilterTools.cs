@@ -3,6 +3,9 @@ using LiteDB;
 
 namespace LiteDb_Memory_Lib;
 
+/// <summary>
+/// Query helpers that simplify retrieving documents from LiteDB collections.
+/// </summary>
 public static class FilterTools
 {
     /// <summary>
@@ -16,8 +19,8 @@ public static class FilterTools
     /// <returns>The first matching document or <c>null</c> when none exists.</returns>
     public static T? FindOne<T>(ConnectionManager manager, string alias, string collectionName, Expression<Func<T, bool>> predicate)
     {
-         var collection = manager.GetCollection<T>(alias, collectionName);
-         return collection is not null ? collection.FindOne(predicate) : default;
+        var collection = manager.GetCollection<T>(alias, collectionName);
+        return collection is not null ? collection.FindOne(predicate) : default;
     }
 
     /// <summary>

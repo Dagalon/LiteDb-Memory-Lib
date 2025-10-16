@@ -2,6 +2,9 @@
 
 namespace LiteDb_Memory_Lib;
 
+/// <summary>
+/// Utility helpers to manage LiteDB file storage operations from memory.
+/// </summary>
 public static class FileStorageTools
 {
     /// <summary>
