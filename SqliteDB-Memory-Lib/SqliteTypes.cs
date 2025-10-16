@@ -2,8 +2,16 @@
 
 namespace SqliteDB_Memory_Lib
 {
+    /// <summary>
+    /// Provides helper methods to map .NET types and values to SQLite equivalents.
+    /// </summary>
     public static class NetTypeToSqLiteType
     {
+        /// <summary>
+        /// Translates a .NET type into a <see cref="DbType"/> compatible with SQLite.
+        /// </summary>
+        /// <param name="type">Source .NET type.</param>
+        /// <returns>The corresponding <see cref="DbType"/>.</returns>
         public static DbType GetDbType(Type type)
         {
             return type switch
@@ -21,6 +29,11 @@ namespace SqliteDB_Memory_Lib
             };
         }
 
+        /// <summary>
+        /// Attempts to parse a string into its most appropriate .NET type.
+        /// </summary>
+        /// <param name="value">String representation of the value.</param>
+        /// <returns>A tuple with the parsed value and the detected <see cref="Type"/>.</returns>
         public static (object, Type) StrTryParse(string? value)
         {
             if (string.IsNullOrEmpty(value))

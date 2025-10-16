@@ -6,8 +6,20 @@ using Microsoft.Data.Sqlite;
 
 namespace SqliteDB_Memory_Lib;
 
+/// <summary>
+/// Provides helpers for creating and manipulating SQLite databases stored in memory or on disk.
+/// </summary>
 public static partial class SqLiteLiteTools
 {
+    /// <summary>
+    /// Creates or attaches a database to the supplied connection and optionally enables WAL mode.
+    /// </summary>
+    /// <param name="connection">Connection that will host the database.</param>
+    /// <param name="idDataBase">Identifier assigned to the database. When null, it is inferred from the file path.</param>
+    /// <param name="path">Path to the database file or <c>null</c> for in-memory databases.</param>
+    /// <param name="walMode">Indicates whether write-ahead logging should be enabled.</param>
+    /// <param name="dependency">Optional dependency parameter kept for backward compatibility.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output CreateDatabase(SqliteConnection connection, string? idDataBase, string? path, bool walMode = false, object? dependency = null)
     {
         var listDataBase = GetListDataBase(connection);
@@ -49,6 +61,15 @@ public static partial class SqLiteLiteTools
         return EnumsSqliteMemory.Output.SUCCESS;
     }
 
+    /// <summary>
+    /// Creates a table with the specified schema and optional seed data.
+    /// </summary>
+    /// <param name="db">Connection where the table will be created.</param>
+    /// <param name="idDataBase">Identifier of the database that will host the table.</param>
+    /// <param name="idTable">Name assigned to the new table.</param>
+    /// <param name="headers">Collection of column names.</param>
+    /// <param name="values">Optional matrix of values inserted after creation.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output CreateTable(SqliteConnection db, string idDataBase, string idTable, List<string> headers, object[,]? values)
     {
         if (string.IsNullOrEmpty(idDataBase))
@@ -72,6 +93,14 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Creates a table and populates it with the contents of a CSV file.
+    /// </summary>
+    /// <param name="db">Connection where the table will be created.</param>
+    /// <param name="idDataBase">Identifier of the database that will host the table.</param>
+    /// <param name="idTable">Name assigned to the new table.</param>
+    /// <param name="pathCsvValues">Path to the CSV file with the seed data.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output CreateTable(SqliteConnection db, string idDataBase, string idTable, string pathCsvValues)
     {
         if (string.IsNullOrEmpty(idDataBase))
@@ -144,6 +173,15 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Inserts data from a CSV file into the target table.
+    /// </summary>
+    /// <param name="db">Connection used to run the insert operations.</param>
+    /// <param name="idDataBase">Identifier of the database that contains the table.</param>
+    /// <param name="idTable">Name of the target table.</param>
+    /// <param name="pathCsvValues">Path to the CSV file with the data to insert.</param>
+    /// <param name="extraEnd">Optional SQL clause appended to the insert command.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output Insert(SqliteConnection db, string idDataBase, string idTable, string pathCsvValues, string extraEnd)
     {
         if (string.IsNullOrEmpty(pathCsvValues))
@@ -206,6 +244,16 @@ public static partial class SqLiteLiteTools
         }
     }
        
+    /// <summary>
+    /// Inserts the supplied values into the target table.
+    /// </summary>
+    /// <param name="db">Connection used to run the insert operations.</param>
+    /// <param name="idDataBase">Identifier of the database that contains the table.</param>
+    /// <param name="idTable">Name of the target table.</param>
+    /// <param name="fields">Fields included in the insert statement.</param>
+    /// <param name="values">Matrix of values that represent the rows to insert.</param>
+    /// <param name="extraEnd">Optional SQL clause appended to the insert command.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output Insert(SqliteConnection db, string idDataBase, string idTable, List<String> fields,
         object[,] values, string extraEnd)
     {
@@ -226,11 +274,22 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Executes the provided SQL query and returns the results as dictionaries.
+    /// </summary>
+    /// <param name="db">Connection used to execute the query.</param>
+    /// <param name="qry">SQL statement to run.</param>
+    /// <returns>List of result rows represented as dictionaries.</returns>
     public static List<Dictionary<string, object>> Select(SqliteConnection db, string qry)
     {
         return QueryExecutor.ExecuteQryReader(db, qry);
     }
 
+    /// <summary>
+    /// Creates a new SQLite connection using in-memory or file-based storage depending on the provided path.
+    /// </summary>
+    /// <param name="path">Optional path to the SQLite database file.</param>
+    /// <returns>The configured <see cref="SqliteConnection"/>.</returns>
     public static SqliteConnection GetInstance(string? path)
     {
         if (string.IsNullOrEmpty(path))
@@ -243,6 +302,14 @@ public static partial class SqLiteLiteTools
             : new SqliteConnection("Data Source=:memory:");
     }
 
+    /// <summary>
+    /// Attaches an external database file to the provided connection, creating the file if required.
+    /// </summary>
+    /// <param name="db">Connection that will host the attached database.</param>
+    /// <param name="path">Path to the database file.</param>
+    /// <param name="aliasDataBase">Alias assigned to the attached database.</param>
+    /// <param name="removeIfExist">Indicates whether an existing file should be deleted before attachment.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output AttachedDataBase(SqliteConnection db, string? path, string? aliasDataBase, bool removeIfExist=false)
     {
         try
@@ -296,6 +363,11 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Enables write-ahead logging (WAL) mode on the supplied connection.
+    /// </summary>
+    /// <param name="db">Connection that will be configured.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output ActivateWalMode(SqliteConnection db)
     {
         try
@@ -310,6 +382,11 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Retrieves identifiers for all databases attached to the given connection.
+    /// </summary>
+    /// <param name="db">Connection inspected for attached databases.</param>
+    /// <returns>List with the identifiers of the attached databases.</returns>
     public static List<string>? GetListDataBase(SqliteConnection db)
     {
 
@@ -326,6 +403,12 @@ public static partial class SqLiteLiteTools
         return idList;
     }
 
+    /// <summary>
+    /// Retrieves the list of tables stored inside the specified database.
+    /// </summary>
+    /// <param name="db">Connection that contains the database.</param>
+    /// <param name="idDataBase">Identifier of the database whose tables will be listed.</param>
+    /// <returns>Status of the operation and the table names when successful.</returns>
     public static (EnumsSqliteMemory.Output, List<string>?) GetListTables(SqliteConnection db, string idDataBase)
     {
         var dataBases = GetListDataBase(db);
@@ -362,6 +445,13 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Executes a SQL command stored in a file without returning results.
+    /// </summary>
+    /// <param name="db">Connection used to execute the command.</param>
+    /// <param name="qryFilePath">Path to the file that contains the SQL statement.</param>
+    /// <param name="parameters">Optional dictionary with parameter replacements.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output ExecuteQryNotReader(SqliteConnection db, string qryFilePath, Dictionary<string, string>? parameters)
     {
         if (string.IsNullOrEmpty(qryFilePath))
@@ -400,6 +490,12 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Substitutes parameter placeholders inside a SQL file with concrete values.
+    /// </summary>
+    /// <param name="qryFilePath">Path to the SQL template file.</param>
+    /// <param name="parameters">Dictionary that maps placeholders to values.</param>
+    /// <returns>Status of the operation and the resulting SQL string when successful.</returns>
     public static (EnumsSqliteMemory.Output, string?) SubstituteParameters(string qryFilePath, Dictionary<string, string> parameters)
     {
         if (string.IsNullOrEmpty(qryFilePath))
@@ -430,6 +526,13 @@ public static partial class SqLiteLiteTools
         }
     }
     
+    /// <summary>
+    /// Executes a SQL query stored in a file and returns the results as dictionaries.
+    /// </summary>
+    /// <param name="db">Connection used to execute the query.</param>
+    /// <param name="qryFilePath">Path to the SQL file that contains the query.</param>
+    /// <param name="parameters">Optional dictionary with parameter replacements.</param>
+    /// <returns>Status describing the outcome of the operation and the retrieved rows.</returns>
     public static (EnumsSqliteMemory.Output, List<Dictionary<string, object>>?) ExecuteQryReader(SqliteConnection db, string qryFilePath, Dictionary<string, string>? parameters)
     {
         if (string.IsNullOrEmpty(qryFilePath))
@@ -462,6 +565,13 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Persists the specified database to a file on disk.
+    /// </summary>
+    /// <param name="db">Connection that holds the in-memory database.</param>
+    /// <param name="idDataBase">Identifier of the database to back up.</param>
+    /// <param name="idPathFile">Destination file path.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output SaveDataBase(SqliteConnection db, string idDataBase, string idPathFile)
     {
         if (string.IsNullOrEmpty(idDataBase))
@@ -489,6 +599,12 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Retrieves placeholder parameters defined in a SQL query or file.
+    /// </summary>
+    /// <param name="qryFilePath">Path to the SQL file to inspect.</param>
+    /// <param name="qry">SQL string to inspect when not using a file.</param>
+    /// <returns>Status describing the outcome and an array of placeholders.</returns>
     public static (EnumsSqliteMemory.Output, object[]?) GetListParameters(string qryFilePath, string qry)
     {
         var qryToExecute = "";  
@@ -532,6 +648,13 @@ public static partial class SqLiteLiteTools
         return (EnumsSqliteMemory.Output.SUCCESS, result);
     }
 
+    /// <summary>
+    /// Drops a table from the specified database.
+    /// </summary>
+    /// <param name="db">Connection that hosts the database.</param>
+    /// <param name="idDataBase">Identifier of the database that contains the table.</param>
+    /// <param name="idTable">Name of the table to drop.</param>
+    /// <returns>Status describing the outcome and an informational message.</returns>
     public static (EnumsSqliteMemory.Output, string?) DropTable(SqliteConnection db, string idDataBase, string idTable)
     {
         if (string.IsNullOrEmpty(idDataBase))
@@ -562,6 +685,12 @@ public static partial class SqLiteLiteTools
         }
     }
 
+    /// <summary>
+    /// Detaches an attached database from the connection.
+    /// </summary>
+    /// <param name="db">Connection that hosts the database.</param>
+    /// <param name="idDatabase">Identifier of the database to detach.</param>
+    /// <returns>Status describing the outcome of the operation.</returns>
     public static EnumsSqliteMemory.Output DeleteDataBase(SqliteConnection db, string idDatabase)
     {
         if (string.IsNullOrEmpty(idDatabase))
