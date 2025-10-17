@@ -222,7 +222,7 @@ public static partial class SqLiteLiteTools
     /// Inserts rows into the target table by using the provided in-memory matrix.
     /// </summary>
     public static EnumsSqliteMemory.Output Insert(SqliteConnection db, string idDataBase, string idTable, List<String> fields,
-        object[,] values, string extraEnd)
+        object[,] values, string? extraEnd = null)
     {
 
         if (string.IsNullOrEmpty(idDataBase))

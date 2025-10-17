@@ -11,7 +11,7 @@ namespace SqliteDB_Memory_Lib
         /// Inserts multiple rows into the specified table by using parameterized statements.
         /// </summary>
         public static void Insert(SqliteConnection db, string idDataBase, string idTable, List<string> fields,
-            object[,] values, string extraEnd)
+            object[,] values, string? extraEnd)
         {
          
             var filteredFields =
